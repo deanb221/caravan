@@ -44,6 +44,48 @@ export default function AdminPage() {
     localStorage.setItem('admin_sites', JSON.stringify(newSites));
   };
 
+  const exportData = () => {
+    const data = {
+      caravans,
+      sites,
+      exportedAt: new Date().toISOString(),
+    };
+    const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `caravan-data-${new Date().toISOString().split('T')[0]}.json`;
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+    alert('Data exported successfully! You can now update the data files with this JSON.');
+  };
+
+  const importData = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0];
+    if (!file) return;
+
+    const reader = new FileReader();
+    reader.onload = (e) => {
+      try {
+        const data = JSON.parse(e.target?.result as string);
+        if (data.caravans && Array.isArray(data.caravans)) {
+          saveCaravans(data.caravans);
+        }
+        if (data.sites && Array.isArray(data.sites)) {
+          saveSites(data.sites);
+        }
+        alert('Data imported successfully!');
+        window.location.reload();
+      } catch (error) {
+        alert('Error importing data. Please check the file format.');
+        console.error(error);
+      }
+    };
+    reader.readAsText(file);
+  };
+
   const handleDeleteCaravan = (id: string) => {
     if (confirm('Are you sure you want to delete this caravan?')) {
       saveCaravans(caravans.filter(c => c.id !== id));
@@ -69,6 +111,35 @@ export default function AdminPage() {
 
       <section className="section-padding">
         <div className="container-custom">
+          {/* Export/Import Controls */}
+          <div className="mb-6 p-4 bg-blue-50 border border-blue-200 rounded-xl">
+            <div className="flex flex-col sm:flex-row gap-4 items-center justify-between">
+              <div>
+                <h3 className="font-semibold text-gray-900 mb-1">Data Management</h3>
+                <p className="text-sm text-gray-600">
+                  Export your data to update the live site, or import previously exported data.
+                </p>
+              </div>
+              <div className="flex gap-3">
+                <button
+                  onClick={exportData}
+                  className="px-4 py-2 bg-primary-600 text-white rounded-lg hover:bg-primary-700 font-semibold text-sm"
+                >
+                  📥 Export Data
+                </button>
+                <label className="px-4 py-2 bg-secondary-600 text-white rounded-lg hover:bg-secondary-700 font-semibold text-sm cursor-pointer">
+                  📤 Import Data
+                  <input
+                    type="file"
+                    accept=".json"
+                    onChange={importData}
+                    className="hidden"
+                  />
+                </label>
+              </div>
+            </div>
+          </div>
+
           {/* Tabs */}
           <div className="flex space-x-4 mb-8 border-b border-gray-200">
             <button
