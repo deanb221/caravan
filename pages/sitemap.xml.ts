@@ -1,7 +1,7 @@
 import { GetServerSideProps } from 'next';
 import { caravans } from '@/data/caravans';
 
-const SITE_URL = 'https://www.nicaravanhire.co.uk';
+const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || 'https://www.nicaravanhire.co.uk';
 
 // Static pages
 const staticPages = [
