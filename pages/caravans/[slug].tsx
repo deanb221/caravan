@@ -55,6 +55,7 @@ export default function CaravanDetailPage() {
             fill
             className="object-cover"
             priority
+            unoptimized={caravan.images[selectedImage].startsWith('http')}
           />
         )}
         <div className="absolute inset-0 bg-black opacity-40"></div>
@@ -85,6 +86,7 @@ export default function CaravanDetailPage() {
                       alt={`${caravan.name} - Image ${idx + 1}`}
                       fill
                       className="object-cover"
+                      unoptimized={image.startsWith('http')}
                     />
                   </button>
                 ))}

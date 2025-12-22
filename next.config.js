@@ -21,10 +21,13 @@ const nextConfig = {
     // Allow images to be loaded from any referrer
     dangerouslyAllowSVG: true,
     contentSecurityPolicy: "default-src 'self'; script-src 'none'; sandbox;",
-    // Ensure images work when accessed via Google
+    // Ensure images work when accessed via Google (especially on mobile)
     unoptimized: false,
+    // Add device sizes for better mobile support
+    deviceSizes: [640, 750, 828, 1080, 1200, 1920, 2048, 3840],
+    imageSizes: [16, 32, 48, 64, 96, 128, 256, 384],
   },
-  // Add headers to allow images to be loaded from any referrer
+  // Add headers to allow images to be loaded from any referrer (especially for mobile)
   async headers() {
     return [
       {
@@ -34,6 +37,10 @@ const nextConfig = {
             key: 'Referrer-Policy',
             value: 'no-referrer-when-downgrade',
           },
+          {
+            key: 'Cross-Origin-Resource-Policy',
+            value: 'cross-origin',
+          },
         ],
       },
       {
@@ -41,7 +48,19 @@ const nextConfig = {
         headers: [
           {
             key: 'Referrer-Policy',
-            value: 'no-referrer-when-downgrade',
+            value: 'no-referrer',
+          },
+          {
+            key: 'Cross-Origin-Resource-Policy',
+            value: 'cross-origin',
+          },
+          {
+            key: 'Access-Control-Allow-Origin',
+            value: '*',
+          },
+          {
+            key: 'Access-Control-Allow-Methods',
+            value: 'GET, OPTIONS',
           },
         ],
       },

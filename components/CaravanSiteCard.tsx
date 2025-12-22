@@ -16,6 +16,7 @@ export default function CaravanSiteCard({ site }: CaravanSiteCardProps) {
             fill
             className="object-cover card-image"
             sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+            unoptimized={site.image.startsWith('http')}
             onError={(e) => {
               console.error('Image failed to load:', site.image);
             }}

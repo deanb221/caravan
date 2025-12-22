@@ -18,8 +18,15 @@ export default function CaravanCard({ caravan }: CaravanCardProps) {
               fill
               className="object-cover card-image"
               sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+              priority
+              unoptimized={caravan.images[0].startsWith('http')}
               onError={(e) => {
                 console.error('Image failed to load:', caravan.images[0]);
+                // Fallback to a placeholder if image fails
+                const target = e.target as HTMLImageElement;
+                if (target) {
+                  target.style.display = 'none';
+                }
               }}
             />
           ) : (
