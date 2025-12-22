@@ -13,11 +13,11 @@ const staticPages = [
   '/terms',
 ];
 
-function generateSiteMap() {
+function generateSiteMap(caravansData: typeof caravans) {
   const currentDate = new Date().toISOString().split('T')[0];
   
   // Get all caravan slugs
-  const caravanPages = caravans.map((caravan) => `/caravans/${caravan.slug}`);
+  const caravanPages = caravansData.map((caravan) => `/caravans/${caravan.slug}`);
   
   // Combine all pages
   const allPages = [...staticPages, ...caravanPages];
