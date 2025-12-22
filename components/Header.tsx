@@ -70,25 +70,53 @@ export default function Header() {
         {isMenuOpen && (
           <div className="md:hidden py-4 border-t border-gray-200">
             <div className="flex flex-col space-y-4">
-              <Link href="/" className="text-gray-700 hover:text-primary-600 font-medium transition-colors">
+              <Link 
+                href="/" 
+                onClick={() => setIsMenuOpen(false)}
+                className="text-gray-700 hover:text-primary-600 font-medium transition-colors"
+              >
                 Home
               </Link>
-              <Link href="/caravans" className="text-gray-700 hover:text-primary-600 font-medium transition-colors">
+              <Link 
+                href="/caravans" 
+                onClick={() => setIsMenuOpen(false)}
+                className="text-gray-700 hover:text-primary-600 font-medium transition-colors"
+              >
                 Caravans
               </Link>
-              <Link href="/sites" className="text-gray-700 hover:text-primary-600 font-medium transition-colors">
+              <Link 
+                href="/sites" 
+                onClick={() => setIsMenuOpen(false)}
+                className="text-gray-700 hover:text-primary-600 font-medium transition-colors"
+              >
                 Caravan Sites
               </Link>
-              <Link href="/about" className="text-gray-700 hover:text-primary-600 font-medium transition-colors">
+              <Link 
+                href="/about" 
+                onClick={() => setIsMenuOpen(false)}
+                className="text-gray-700 hover:text-primary-600 font-medium transition-colors"
+              >
                 About
               </Link>
-              <Link href="/contact" className="text-gray-700 hover:text-primary-600 font-medium transition-colors">
+              <Link 
+                href="/contact" 
+                onClick={() => setIsMenuOpen(false)}
+                className="text-gray-700 hover:text-primary-600 font-medium transition-colors"
+              >
                 Contact
               </Link>
-              <Link href="/terms" className="text-gray-700 hover:text-primary-600 font-medium transition-colors">
+              <Link 
+                href="/terms" 
+                onClick={() => setIsMenuOpen(false)}
+                className="text-gray-700 hover:text-primary-600 font-medium transition-colors"
+              >
                 Terms
               </Link>
-              <Link href="/caravans" className="btn-primary text-center">
+              <Link 
+                href="/caravans" 
+                onClick={() => setIsMenuOpen(false)}
+                className="btn-primary text-center"
+              >
                 Book Now
               </Link>
             </div>
