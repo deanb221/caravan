@@ -43,3 +43,5 @@ Vercel will automatically deploy the changes, and your caravans/sites will appea
 - Images must be accessible URLs (not local files)
 - After updating data files, the live site will show the new data to all visitors
 
+
+
