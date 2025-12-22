@@ -27,8 +27,8 @@ export default function Document() {
         <meta name="robots" content="index, follow" />
         <meta name="googlebot" content="index, follow" />
         
-        {/* Google Search Console Verification - Replace with your verification code */}
-        {/* <meta name="google-site-verification" content="YOUR_VERIFICATION_CODE_HERE" /> */}
+        {/* Google Search Console Verification */}
+        <meta name="google-site-verification" content="NiTyCQ7aJ54uUM0ZQq86LtHKQ5iHQnUOd9NujM3W4eA" />
       </Head>
       <body>
         <Main />
