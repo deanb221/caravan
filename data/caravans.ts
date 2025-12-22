@@ -25,7 +25,6 @@ export const caravans: Caravan[] = [
     ],
     petFriendly: true,
     pricing: {
-      weekday: 80,
       weekend: 120,
       weekly: 500,
       peakSeason: 150,
@@ -58,7 +57,6 @@ export const caravans: Caravan[] = [
     ],
     petFriendly: false,
     pricing: {
-      weekday: 60,
       weekend: 90,
       weekly: 400,
       peakSeason: 110,
@@ -91,7 +89,6 @@ export const caravans: Caravan[] = [
     ],
     petFriendly: true,
     pricing: {
-      weekday: 120,
       weekend: 180,
       weekly: 750,
       peakSeason: 220,
@@ -124,7 +121,6 @@ export const caravans: Caravan[] = [
     ],
     petFriendly: true,
     pricing: {
-      weekday: 75,
       weekend: 110,
       weekly: 450,
       peakSeason: 130,

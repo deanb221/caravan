@@ -10,7 +10,6 @@ export interface Caravan {
   features: string[];
   petFriendly: boolean;
   pricing: {
-    weekday: number;
     weekend: number;
     weekly: number;
     peakSeason: number;
