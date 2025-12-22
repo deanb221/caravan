@@ -1,0 +1,10 @@
+User-agent: *
+Allow: /
+
+# Sitemap location
+Sitemap: https://www.nicaravanhire.co.uk/sitemap.xml
+
+# Disallow admin pages
+Disallow: /admin
+Disallow: /api
+
