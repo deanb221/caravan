@@ -1,4 +1,5 @@
 import Link from 'next/link';
+import Image from 'next/image';
 
 export default function Footer() {
   return (
@@ -7,14 +8,20 @@ export default function Footer() {
         <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
           {/* Company Info */}
           <div className="col-span-1 md:col-span-2">
-            <div className="flex items-center space-x-2 mb-4">
-              <div className="w-10 h-10 bg-gradient-to-br from-primary-600 to-secondary-600 rounded-lg flex items-center justify-center">
-                <span className="text-white font-bold text-lg">NI</span>
+            <div className="flex items-center space-x-3 mb-4">
+              <div className="relative w-24 h-24">
+                <Image
+                  src="/logo.png"
+                  alt="NI Caravan Hire Logo"
+                  fill
+                  className="object-contain"
+                />
               </div>
               <span className="text-xl font-bold text-white">Caravan Hire</span>
             </div>
-            <p className="text-gray-400 mb-4">
-              Explore Northern Ireland in comfort and style. Quality caravans for unforgettable adventures.
+            <p className="text-gray-400 mb-4 font-medium">
+              Explore Northern Ireland in comfort and style. Quality touring caravans for unforgettable adventures. 
+              Create family memories that will last a lifetime.
             </p>
             <div className="space-y-2">
               <p className="text-sm">
@@ -41,6 +48,11 @@ export default function Footer() {
                 </Link>
               </li>
               <li>
+                <Link href="/sites" className="hover:text-primary-400 transition-colors">
+                  Caravan Sites
+                </Link>
+              </li>
+              <li>
                 <Link href="/about" className="hover:text-primary-400 transition-colors">
                   About Us
                 </Link>
@@ -48,6 +60,11 @@ export default function Footer() {
               <li>
                 <Link href="/contact" className="hover:text-primary-400 transition-colors">
                   Contact
+                </Link>
+              </li>
+              <li>
+                <Link href="/terms" className="hover:text-primary-400 transition-colors">
+                  Terms & Conditions
                 </Link>
               </li>
             </ul>

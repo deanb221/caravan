@@ -1,17 +1,24 @@
 import Link from 'next/link';
+import Image from 'next/image';
 import { useState } from 'react';
 
 export default function Header() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
 
   return (
-    <header className="bg-white shadow-md sticky top-0 z-50">
+    <header className="bg-white/95 backdrop-blur-md shadow-lg sticky top-0 z-50 border-b border-gray-100">
       <nav className="container-custom">
-        <div className="flex items-center justify-between h-16 md:h-20">
+        <div className="flex items-center justify-between h-28 md:h-32">
           {/* Logo */}
-          <Link href="/" className="flex items-center space-x-2">
-            <div className="w-10 h-10 md:w-12 md:h-12 bg-gradient-to-br from-primary-600 to-secondary-600 rounded-lg flex items-center justify-center">
-              <span className="text-white font-bold text-lg md:text-xl">NI</span>
+          <Link href="/" className="flex items-center space-x-3">
+            <div className="relative w-24 h-24 md:w-32 md:h-32">
+              <Image
+                src="/logo.png"
+                alt="NI Caravan Hire Logo"
+                fill
+                className="object-contain"
+                priority
+              />
             </div>
             <span className="text-xl md:text-2xl font-bold text-gray-900">
               Caravan Hire
@@ -26,13 +33,19 @@ export default function Header() {
             <Link href="/caravans" className="text-gray-700 hover:text-primary-600 font-medium transition-colors">
               Caravans
             </Link>
+            <Link href="/sites" className="text-gray-700 hover:text-primary-600 font-medium transition-colors">
+              Caravan Sites
+            </Link>
             <Link href="/about" className="text-gray-700 hover:text-primary-600 font-medium transition-colors">
               About
             </Link>
             <Link href="/contact" className="text-gray-700 hover:text-primary-600 font-medium transition-colors">
               Contact
             </Link>
-            <Link href="/caravans" className="btn-primary">
+            <Link href="/terms" className="text-gray-700 hover:text-primary-600 font-medium transition-colors text-sm">
+              Terms
+            </Link>
+            <Link href="/caravans" className="bg-gradient-to-r from-primary-700 to-primary-800 hover:from-primary-800 hover:to-primary-900 text-white font-bold py-2.5 px-6 rounded-full transition-all duration-300 shadow-lg hover:shadow-xl hover:scale-105 active:scale-100 transform tracking-tight text-sm whitespace-nowrap border-2 border-primary-600">
               Book Now
             </Link>
           </div>
@@ -63,11 +76,17 @@ export default function Header() {
               <Link href="/caravans" className="text-gray-700 hover:text-primary-600 font-medium transition-colors">
                 Caravans
               </Link>
+              <Link href="/sites" className="text-gray-700 hover:text-primary-600 font-medium transition-colors">
+                Caravan Sites
+              </Link>
               <Link href="/about" className="text-gray-700 hover:text-primary-600 font-medium transition-colors">
                 About
               </Link>
               <Link href="/contact" className="text-gray-700 hover:text-primary-600 font-medium transition-colors">
                 Contact
+              </Link>
+              <Link href="/terms" className="text-gray-700 hover:text-primary-600 font-medium transition-colors">
+                Terms
               </Link>
               <Link href="/caravans" className="btn-primary text-center">
                 Book Now

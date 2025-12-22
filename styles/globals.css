@@ -2,39 +2,117 @@
 @tailwind components;
 @tailwind utilities;
 
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap');
+
 @layer base {
   html {
     scroll-behavior: smooth;
   }
   
   body {
-    @apply bg-white text-gray-900;
+    @apply bg-white text-gray-900 antialiased;
+    font-feature-settings: "kern" 1;
+    font-family: 'Inter', system-ui, -apple-system, sans-serif;
+  }
+  
+  h1, h2, h3, h4, h5, h6 {
+    @apply font-bold tracking-tight;
+    letter-spacing: -0.02em;
+  }
+  
+  p {
+    @apply leading-relaxed;
   }
 }
 
 @layer components {
   .btn-primary {
-    @apply bg-primary-600 hover:bg-primary-700 text-white font-semibold py-3 px-6 rounded-lg transition-colors duration-200 shadow-md hover:shadow-lg;
+    @apply bg-gradient-to-r from-primary-600 to-primary-700 hover:from-primary-700 hover:to-primary-800 text-white font-semibold py-3.5 px-10 rounded-full transition-all duration-300 shadow-lg hover:shadow-2xl hover:scale-105 active:scale-100 transform tracking-tight text-base;
+    font-weight: 600;
+    letter-spacing: -0.01em;
   }
   
   .btn-secondary {
-    @apply bg-secondary-600 hover:bg-secondary-700 text-white font-semibold py-3 px-6 rounded-lg transition-colors duration-200 shadow-md hover:shadow-lg;
+    @apply bg-gradient-to-r from-secondary-600 to-secondary-700 hover:from-secondary-700 hover:to-secondary-800 text-white font-semibold py-3.5 px-10 rounded-full transition-all duration-300 shadow-lg hover:shadow-2xl hover:scale-105 active:scale-100 transform tracking-tight text-base;
+    font-weight: 600;
+    letter-spacing: -0.01em;
   }
   
   .btn-outline {
-    @apply border-2 border-primary-600 text-primary-600 hover:bg-primary-600 hover:text-white font-semibold py-3 px-6 rounded-lg transition-colors duration-200;
+    @apply border-2 border-primary-600 text-primary-600 hover:bg-primary-600 hover:text-white font-semibold py-3.5 px-10 rounded-full transition-all duration-300 hover:scale-105 active:scale-100 transform shadow-md hover:shadow-xl tracking-tight text-base;
+    font-weight: 600;
+    letter-spacing: -0.01em;
   }
   
   .card {
-    @apply bg-white rounded-xl shadow-lg overflow-hidden transition-transform duration-200 hover:shadow-xl hover:-translate-y-1;
+    @apply bg-white rounded-2xl shadow-lg overflow-hidden transition-all duration-300 hover:shadow-2xl hover:-translate-y-2 transform border border-gray-100;
+  }
+  
+  .card-image {
+    @apply transition-transform duration-500 hover:scale-110;
   }
   
   .section-padding {
-    @apply py-12 md:py-16 lg:py-20;
+    @apply py-16 md:py-20 lg:py-24;
   }
   
   .container-custom {
     @apply max-w-7xl mx-auto px-4 sm:px-6 lg:px-8;
   }
+  
+  .gradient-text {
+    @apply bg-gradient-to-r from-primary-600 to-secondary-600 bg-clip-text text-transparent;
+  }
+  
+  .feature-icon {
+    @apply w-20 h-20 bg-gradient-to-br from-primary-100 to-secondary-100 rounded-2xl flex items-center justify-center mx-auto mb-6 transition-transform duration-300 hover:scale-110 hover:rotate-3 transform;
+  }
+}
+
+/* Custom DatePicker Styles */
+.react-datepicker-wrapper {
+  width: 100%;
+}
+
+.react-datepicker__input-container input {
+  width: 100% !important;
+}
+
+.react-datepicker {
+  @apply border-2 border-gray-200 rounded-xl shadow-xl;
+  font-family: inherit;
+}
+
+.react-datepicker__header {
+  @apply bg-gradient-to-r from-primary-600 to-secondary-600 rounded-t-xl border-0;
+}
+
+.react-datepicker__current-month {
+  @apply text-white font-semibold;
+}
+
+.react-datepicker__day-name {
+  @apply text-white font-semibold;
+}
+
+.react-datepicker__day--selected,
+.react-datepicker__day--keyboard-selected {
+  @apply bg-primary-600 text-white rounded-lg;
+}
+
+.react-datepicker__day--in-range {
+  @apply bg-primary-100 text-primary-700;
+}
+
+.react-datepicker__day--in-selecting-range {
+  @apply bg-primary-200 text-primary-800;
+}
+
+.react-datepicker__day:hover {
+  @apply bg-primary-100 rounded-lg;
+}
+
+.react-datepicker__day--disabled {
+  @apply text-gray-300 cursor-not-allowed;
 }
 

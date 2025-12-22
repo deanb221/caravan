@@ -22,8 +22,8 @@ export default function ContactPage() {
     <div className="bg-gray-50 min-h-screen">
       <section className="section-padding bg-gradient-to-br from-primary-600 to-secondary-700 text-white">
         <div className="container-custom">
-          <h1 className="text-4xl md:text-5xl font-bold mb-4">Contact Us</h1>
-          <p className="text-xl text-primary-100">
+          <h1 className="text-4xl md:text-5xl font-extrabold mb-4 tracking-tight">Contact Us</h1>
+          <p className="text-xl text-primary-100 font-medium tracking-tight">
             Get in touch with our team - we're here to help
           </p>
         </div>
@@ -34,7 +34,7 @@ export default function ContactPage() {
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
             {/* Contact Form */}
             <div className="bg-white rounded-xl shadow-lg p-8 md:p-12">
-              <h2 className="text-2xl font-bold text-gray-900 mb-6">Send us a Message</h2>
+              <h2 className="text-2xl font-extrabold text-gray-900 mb-6 tracking-tight">Send us a Message</h2>
               
               {submitted && (
                 <div className="mb-6 p-4 bg-green-100 border border-green-400 text-green-700 rounded-lg">
@@ -53,7 +53,8 @@ export default function ContactPage() {
                     required
                     value={formData.name}
                     onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500"
+                    className="w-full px-4 py-3.5 border-2 border-gray-200 rounded-xl focus:ring-2 focus:ring-primary-500 focus:border-primary-500 transition-all duration-200 bg-gray-50 focus:bg-white"
+                    placeholder="John Doe"
                   />
                 </div>
 
@@ -67,7 +68,8 @@ export default function ContactPage() {
                     required
                     value={formData.email}
                     onChange={(e) => setFormData({ ...formData, email: e.target.value })}
-                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500"
+                    className="w-full px-4 py-3.5 border-2 border-gray-200 rounded-xl focus:ring-2 focus:ring-primary-500 focus:border-primary-500 transition-all duration-200 bg-gray-50 focus:bg-white"
+                    placeholder="john@example.com"
                   />
                 </div>
 
@@ -80,7 +82,8 @@ export default function ContactPage() {
                     id="phone"
                     value={formData.phone}
                     onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
-                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500"
+                    className="w-full px-4 py-3.5 border-2 border-gray-200 rounded-xl focus:ring-2 focus:ring-primary-500 focus:border-primary-500 transition-all duration-200 bg-gray-50 focus:bg-white"
+                    placeholder="028 1234 5678"
                   />
                 </div>
 
@@ -94,12 +97,13 @@ export default function ContactPage() {
                     rows={6}
                     value={formData.message}
                     onChange={(e) => setFormData({ ...formData, message: e.target.value })}
-                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500"
+                    className="w-full px-4 py-3.5 border-2 border-gray-200 rounded-xl focus:ring-2 focus:ring-primary-500 focus:border-primary-500 transition-all duration-200 bg-gray-50 focus:bg-white resize-none"
+                    placeholder="Tell us how we can help..."
                   />
                 </div>
 
                 <button type="submit" className="btn-primary w-full">
-                  Send Message
+                  Send Message →
                 </button>
               </form>
             </div>
@@ -107,7 +111,7 @@ export default function ContactPage() {
             {/* Contact Information */}
             <div className="space-y-6">
               <div className="bg-white rounded-xl shadow-lg p-8 md:p-12">
-                <h2 className="text-2xl font-bold text-gray-900 mb-6">Get in Touch</h2>
+                <h2 className="text-2xl font-extrabold text-gray-900 mb-6 tracking-tight">Get in Touch</h2>
                 
                 <div className="space-y-6">
                   <div className="flex items-start space-x-4">
@@ -157,7 +161,7 @@ export default function ContactPage() {
               </div>
 
               <div className="bg-white rounded-xl shadow-lg p-8 md:p-12">
-                <h2 className="text-2xl font-bold text-gray-900 mb-4">Business Hours</h2>
+                <h2 className="text-2xl font-extrabold text-gray-900 mb-4 tracking-tight">Business Hours</h2>
                 <div className="space-y-2 text-gray-700">
                   <div className="flex justify-between">
                     <span className="font-medium">Monday - Friday</span>

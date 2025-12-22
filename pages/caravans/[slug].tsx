@@ -1,29 +1,38 @@
-import { useState } from 'react';
+'use client';
+
+import { useState, useEffect } from 'react';
 import { useRouter } from 'next/router';
 import Image from 'next/image';
 import { getCaravanBySlug } from '@/data/caravans';
+import { caravans as initialCaravans } from '@/data/caravans';
 import BookingCalendar from '@/components/BookingCalendar';
-import { format } from 'date-fns';
+import { Caravan } from '@/types';
 
 export default function CaravanDetailPage() {
   const router = useRouter();
   const { slug } = router.query;
+  const [caravans, setCaravans] = useState<Caravan[]>(initialCaravans);
   
-  const caravan = router.isReady && slug ? getCaravanBySlug(slug as string) : null;
+  useEffect(() => {
+    const savedCaravans = localStorage.getItem('admin_caravans');
+    if (savedCaravans) {
+      setCaravans(JSON.parse(savedCaravans));
+    }
+  }, []);
+  
+  const getCaravan = (slug: string) => {
+    return caravans.find(c => c.slug === slug);
+  };
+  
+  const caravan = router.isReady && slug ? getCaravan(slug as string) : null;
   const [selectedImage, setSelectedImage] = useState(0);
   const [startDate, setStartDate] = useState<Date | null>(null);
   const [endDate, setEndDate] = useState<Date | null>(null);
-  const [showBookingForm, setShowBookingForm] = useState(false);
-  const [formData, setFormData] = useState({
-    name: '',
-    email: '',
-    phone: '',
-  });
 
   if (!caravan) {
     return (
       <div className="container-custom section-padding text-center">
-        <h1 className="text-3xl font-bold mb-4">Caravan Not Found</h1>
+        <h1 className="text-3xl font-extrabold mb-4 tracking-tight">Touring Caravan Not Found</h1>
         <p className="text-gray-600 mb-8">The caravan you're looking for doesn't exist.</p>
         <a href="/caravans" className="btn-primary">View All Caravans</a>
       </div>
@@ -33,55 +42,6 @@ export default function CaravanDetailPage() {
   const handleDateChange = (start: Date | null, end: Date | null) => {
     setStartDate(start);
     setEndDate(end);
-  };
-
-  const handleBookingSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    
-    if (!startDate || !endDate) {
-      alert('Please select check-in and check-out dates');
-      return;
-    }
-
-    // Calculate total price (simplified - same logic as in BookingCalendar)
-    const days = Math.ceil((endDate.getTime() - startDate.getTime()) / (1000 * 60 * 60 * 24));
-    let totalPrice = 0;
-    
-    for (let i = 0; i < days; i++) {
-      const date = new Date(startDate);
-      date.setDate(date.getDate() + i);
-      const dayOfWeek = date.getDay();
-      if (dayOfWeek === 6 || dayOfWeek === 0) {
-        totalPrice += caravan.pricing.weekend;
-      } else {
-        totalPrice += caravan.pricing.weekday;
-      }
-    }
-
-    if (days >= 7) {
-      const weeklyRate = Math.floor(days / 7) * caravan.pricing.weekly;
-      const remainingDays = days % 7;
-      const remainingCost = remainingDays * caravan.pricing.weekday;
-      totalPrice = weeklyRate + remainingCost;
-    }
-
-    // In a real app, this would send to an API
-    console.log('Booking submitted:', {
-      caravanId: caravan.id,
-      caravanName: caravan.name,
-      ...formData,
-      startDate: format(startDate, 'yyyy-MM-dd'),
-      endDate: format(endDate, 'yyyy-MM-dd'),
-      totalPrice,
-    });
-
-    alert(`Thank you ${formData.name}! Your booking request has been submitted. We'll contact you at ${formData.email} to confirm.`);
-    
-    // Reset form
-    setFormData({ name: '', email: '', phone: '' });
-    setStartDate(null);
-    setEndDate(null);
-    setShowBookingForm(false);
   };
 
   return (
@@ -99,7 +59,7 @@ export default function CaravanDetailPage() {
         )}
         <div className="absolute inset-0 bg-black opacity-40"></div>
         <div className="absolute bottom-0 left-0 right-0 p-8 text-white">
-          <h1 className="text-4xl md:text-5xl font-bold mb-2">{caravan.name}</h1>
+          <h1 className="text-4xl md:text-5xl font-extrabold mb-2 tracking-tight">{caravan.name}</h1>
           <p className="text-xl text-gray-200">{caravan.shortDescription}</p>
         </div>
       </div>
@@ -110,7 +70,7 @@ export default function CaravanDetailPage() {
           <div className="lg:col-span-2 space-y-8">
             {/* Image Gallery */}
             <div className="bg-white rounded-xl shadow-lg p-6">
-              <h2 className="text-2xl font-bold text-gray-900 mb-4">Gallery</h2>
+              <h2 className="text-2xl font-extrabold text-gray-900 mb-4 tracking-tight">Gallery</h2>
               <div className="grid grid-cols-3 gap-4">
                 {caravan.images.map((image, idx) => (
                   <button
@@ -133,7 +93,7 @@ export default function CaravanDetailPage() {
 
             {/* Description */}
             <div className="bg-white rounded-xl shadow-lg p-6">
-              <h2 className="text-2xl font-bold text-gray-900 mb-4">Description</h2>
+              <h2 className="text-2xl font-extrabold text-gray-900 mb-4 tracking-tight">Description</h2>
               <p className="text-gray-700 leading-relaxed mb-4">{caravan.description}</p>
               
               <div className="grid grid-cols-2 md:grid-cols-3 gap-4 mt-6">
@@ -162,8 +122,8 @@ export default function CaravanDetailPage() {
 
             {/* Features */}
             <div className="bg-white rounded-xl shadow-lg p-6">
-              <h2 className="text-2xl font-bold text-gray-900 mb-4">Features</h2>
-              <ul className="grid grid-cols-1 md:grid-cols-2 gap-3">
+              <h2 className="text-2xl font-extrabold text-gray-900 mb-4 tracking-tight">Features</h2>
+              <ul className="grid grid-cols-1 md:grid-cols-2 gap-3 mb-6">
                 {caravan.features.map((feature, idx) => (
                   <li key={idx} className="flex items-center space-x-2">
                     <svg className="w-5 h-5 text-primary-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -173,11 +133,122 @@ export default function CaravanDetailPage() {
                   </li>
                 ))}
               </ul>
+              
+              {/* Safety Certifications */}
+              <div className="mt-6 pt-6 border-t border-gray-200">
+                <h3 className="text-lg font-bold text-gray-900 mb-3 tracking-tight">Safety & Certifications</h3>
+                <div className="flex flex-wrap gap-3">
+                  <div className="flex items-center space-x-2 bg-green-50 px-4 py-2 rounded-lg border border-green-200">
+                    <svg className="w-5 h-5 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                    </svg>
+                    <span className="text-green-700 font-semibold text-sm">Gas Safe Certified</span>
+                  </div>
+                  <div className="flex items-center space-x-2 bg-blue-50 px-4 py-2 rounded-lg border border-blue-200">
+                    <svg className="w-5 h-5 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
+                    </svg>
+                    <span className="text-blue-700 font-semibold text-sm">Electrically Inspected</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            {/* Fully Equipped Section */}
+            <div className="bg-gradient-to-br from-primary-50 via-white to-secondary-50 rounded-xl shadow-lg p-6 md:p-8 border border-primary-100">
+              <div className="text-center mb-6">
+                <h2 className="text-2xl md:text-3xl font-extrabold text-gray-900 mb-2 tracking-tight">
+                  Fully Equipped for Your Adventure
+                </h2>
+                <p className="text-gray-600 font-medium">All caravans come with everything you need</p>
+              </div>
+              
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 mb-6">
+                <div className="bg-white rounded-xl p-4 shadow-md border border-gray-100 hover:shadow-lg transition-shadow duration-300">
+                  <div className="flex items-center space-x-3">
+                    <div className="flex-shrink-0 w-10 h-10 bg-primary-100 rounded-lg flex items-center justify-center">
+                      <svg className="w-6 h-6 text-primary-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                      </svg>
+                    </div>
+                    <span className="text-gray-800 font-semibold text-sm md:text-base">Kitchen with fridge, oven & microwave</span>
+                  </div>
+                </div>
+                
+                <div className="bg-white rounded-xl p-4 shadow-md border border-gray-100 hover:shadow-lg transition-shadow duration-300">
+                  <div className="flex items-center space-x-3">
+                    <div className="flex-shrink-0 w-10 h-10 bg-primary-100 rounded-lg flex items-center justify-center">
+                      <svg className="w-6 h-6 text-primary-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                      </svg>
+                    </div>
+                    <span className="text-gray-800 font-semibold text-sm md:text-base">Cutlery</span>
+                  </div>
+                </div>
+                
+                <div className="bg-white rounded-xl p-4 shadow-md border border-gray-100 hover:shadow-lg transition-shadow duration-300">
+                  <div className="flex items-center space-x-3">
+                    <div className="flex-shrink-0 w-10 h-10 bg-primary-100 rounded-lg flex items-center justify-center">
+                      <svg className="w-6 h-6 text-primary-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                      </svg>
+                    </div>
+                    <span className="text-gray-800 font-semibold text-sm md:text-base">Clean bedding</span>
+                  </div>
+                </div>
+                
+                <div className="bg-white rounded-xl p-4 shadow-md border border-gray-100 hover:shadow-lg transition-shadow duration-300">
+                  <div className="flex items-center space-x-3">
+                    <div className="flex-shrink-0 w-10 h-10 bg-primary-100 rounded-lg flex items-center justify-center">
+                      <svg className="w-6 h-6 text-primary-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                      </svg>
+                    </div>
+                    <span className="text-gray-800 font-semibold text-sm md:text-base">Towels</span>
+                  </div>
+                </div>
+                
+                <div className="bg-white rounded-xl p-4 shadow-md border border-gray-100 hover:shadow-lg transition-shadow duration-300">
+                  <div className="flex items-center space-x-3">
+                    <div className="flex-shrink-0 w-10 h-10 bg-primary-100 rounded-lg flex items-center justify-center">
+                      <svg className="w-6 h-6 text-primary-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                      </svg>
+                    </div>
+                    <span className="text-gray-800 font-semibold text-sm md:text-base">Gas</span>
+                  </div>
+                </div>
+              </div>
+              
+              <div className="bg-gradient-to-r from-primary-600 to-secondary-600 rounded-xl p-6 text-center shadow-lg">
+                <p className="text-white text-lg md:text-xl font-bold tracking-tight">
+                  All you need to bring is a suitcase with clothes!
+                </p>
+              </div>
+            </div>
+
+            {/* Booking & Damage Deposit */}
+            <div className="bg-white rounded-xl shadow-lg p-6 border border-gray-100">
+              <h2 className="text-2xl font-extrabold text-gray-900 mb-4 tracking-tight">Booking & Damage Deposit</h2>
+              <div className="space-y-3 text-gray-700 font-medium leading-relaxed">
+                <p>
+                  A £250 deposit is required per booking. This acts as a booking deposit initially, then as a damage deposit 
+                  during your hire. The full amount is refundable provided the caravan is returned clean, undamaged, and on time.
+                </p>
+                <div className="mt-4">
+                  <a href="/terms" className="text-primary-600 hover:text-primary-700 font-semibold inline-flex items-center space-x-2">
+                    <span>View full terms</span>
+                    <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                    </svg>
+                  </a>
+                </div>
+              </div>
             </div>
 
             {/* Pricing Table */}
             <div className="bg-white rounded-xl shadow-lg p-6">
-              <h2 className="text-2xl font-bold text-gray-900 mb-4">Pricing</h2>
+              <h2 className="text-2xl font-extrabold text-gray-900 mb-4 tracking-tight">Pricing</h2>
               <div className="overflow-x-auto">
                 <table className="w-full">
                   <thead>
@@ -188,20 +259,12 @@ export default function CaravanDetailPage() {
                   </thead>
                   <tbody>
                     <tr className="border-b border-gray-100">
-                      <td className="py-3 px-4 text-gray-700">Weekday (Mon-Thu)</td>
-                      <td className="py-3 px-4 text-right font-semibold text-primary-600">£{caravan.pricing.weekday}/night</td>
-                    </tr>
-                    <tr className="border-b border-gray-100">
-                      <td className="py-3 px-4 text-gray-700">Weekend (Fri-Sun)</td>
-                      <td className="py-3 px-4 text-right font-semibold text-primary-600">£{caravan.pricing.weekend}/night</td>
-                    </tr>
-                    <tr className="border-b border-gray-100">
-                      <td className="py-3 px-4 text-gray-700">Weekly (7+ nights)</td>
-                      <td className="py-3 px-4 text-right font-semibold text-primary-600">£{caravan.pricing.weekly}/week</td>
+                      <td className="py-3 px-4 text-gray-700">Weekend Booking<br /><span className="text-xs text-gray-500">Fri 3-4 PM → Mon 10 AM-12 PM (3 nights)</span></td>
+                      <td className="py-3 px-4 text-right font-semibold text-primary-600">£{caravan.pricing.weekend}</td>
                     </tr>
                     <tr>
-                      <td className="py-3 px-4 text-gray-700">Peak Season</td>
-                      <td className="py-3 px-4 text-right font-semibold text-primary-600">£{caravan.pricing.peakSeason}/night</td>
+                      <td className="py-3 px-4 text-gray-700">Weekly Booking<br /><span className="text-xs text-gray-500">Fri 3-4 PM → Fri 10 AM-12 PM</span></td>
+                      <td className="py-3 px-4 text-right font-semibold text-primary-600">£{caravan.pricing.weekly}</td>
                     </tr>
                   </tbody>
                 </table>
@@ -210,81 +273,13 @@ export default function CaravanDetailPage() {
           </div>
 
           {/* Booking Sidebar */}
-          <div className="lg:col-span-1">
+          <div id="booking-calendar" className="lg:col-span-1">
             <BookingCalendar
               caravan={caravan}
               onDateChange={handleDateChange}
               startDate={startDate}
               endDate={endDate}
             />
-
-            {startDate && endDate && (
-              <div className="mt-6 bg-white rounded-xl shadow-lg p-6">
-                <h3 className="text-xl font-bold text-gray-900 mb-4">Complete Your Booking</h3>
-                {!showBookingForm ? (
-                  <button
-                    onClick={() => setShowBookingForm(true)}
-                    className="btn-primary w-full"
-                  >
-                    Request Booking
-                  </button>
-                ) : (
-                  <form onSubmit={handleBookingSubmit} className="space-y-4">
-                    <div>
-                      <label className="block text-sm font-semibold text-gray-700 mb-2">
-                        Full Name
-                      </label>
-                      <input
-                        type="text"
-                        required
-                        value={formData.name}
-                        onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-                        className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500"
-                      />
-                    </div>
-                    <div>
-                      <label className="block text-sm font-semibold text-gray-700 mb-2">
-                        Email
-                      </label>
-                      <input
-                        type="email"
-                        required
-                        value={formData.email}
-                        onChange={(e) => setFormData({ ...formData, email: e.target.value })}
-                        className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500"
-                      />
-                    </div>
-                    <div>
-                      <label className="block text-sm font-semibold text-gray-700 mb-2">
-                        Phone
-                      </label>
-                      <input
-                        type="tel"
-                        required
-                        value={formData.phone}
-                        onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
-                        className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500"
-                      />
-                    </div>
-                    <div className="flex gap-3">
-                      <button
-                        type="submit"
-                        className="btn-primary flex-1"
-                      >
-                        Submit Booking
-                      </button>
-                      <button
-                        type="button"
-                        onClick={() => setShowBookingForm(false)}
-                        className="px-4 py-3 border border-gray-300 rounded-lg text-gray-700 hover:bg-gray-50"
-                      >
-                        Cancel
-                      </button>
-                    </div>
-                  </form>
-                )}
-              </div>
-            )}
           </div>
         </div>
       </div>

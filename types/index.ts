@@ -43,3 +43,14 @@ export interface BookingFormData {
   caravanId: string;
 }
 
+export interface CaravanSite {
+  id: string;
+  name: string;
+  location: string;
+  description: string;
+  image: string;
+  website: string;
+  features: string[];
+  rating?: number;
+  facilities: string[];
+}
