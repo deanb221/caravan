@@ -11,13 +11,22 @@ export default function CaravanCard({ caravan }: CaravanCardProps) {
     <div className="card group">
       <Link href={`/caravans/${caravan.slug}`}>
         <div className="relative h-72 overflow-hidden bg-gray-100">
-          <Image
-            src={caravan.images[0]}
-            alt={caravan.name}
-            fill
-            className="object-cover card-image"
-            sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
-          />
+          {caravan.images && caravan.images.length > 0 && caravan.images[0] ? (
+            <Image
+              src={caravan.images[0]}
+              alt={caravan.name}
+              fill
+              className="object-cover card-image"
+              sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+              onError={(e) => {
+                console.error('Image failed to load:', caravan.images[0]);
+              }}
+            />
+          ) : (
+            <div className="w-full h-full bg-gradient-to-br from-gray-200 to-gray-300 flex items-center justify-center">
+              <span className="text-gray-500 text-sm">No image available</span>
+            </div>
+          )}
           <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
           <div className="absolute top-4 left-4 flex flex-col gap-2">
             <div className="bg-green-600 text-white px-3 py-1.5 rounded-full text-xs font-semibold shadow-lg backdrop-blur-sm">

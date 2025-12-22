@@ -9,13 +9,22 @@ export default function CaravanSiteCard({ site }: CaravanSiteCardProps) {
   return (
     <div className="card group">
       <div className="relative h-64 overflow-hidden bg-gray-100">
-        <Image
-          src={site.image}
-          alt={site.name}
-          fill
-          className="object-cover card-image"
-          sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
-        />
+        {site.image ? (
+          <Image
+            src={site.image}
+            alt={site.name}
+            fill
+            className="object-cover card-image"
+            sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+            onError={(e) => {
+              console.error('Image failed to load:', site.image);
+            }}
+          />
+        ) : (
+          <div className="w-full h-full bg-gradient-to-br from-gray-200 to-gray-300 flex items-center justify-center">
+            <span className="text-gray-500 text-sm">No image available</span>
+          </div>
+        )}
         <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
         {site.rating && (
           <div className="absolute top-4 right-4 bg-white/90 backdrop-blur-sm px-3 py-1.5 rounded-full text-sm font-semibold flex items-center space-x-1">

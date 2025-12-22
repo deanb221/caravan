@@ -6,12 +6,23 @@ import CaravanCard from '@/components/CaravanCard';
 
 export default function CaravansPage() {
   const [caravans, setCaravans] = useState(initialCaravans);
+  const [isClient, setIsClient] = useState(false);
 
   useEffect(() => {
+    setIsClient(true);
     // Load from localStorage if available
-    const savedCaravans = localStorage.getItem('admin_caravans');
-    if (savedCaravans) {
-      setCaravans(JSON.parse(savedCaravans));
+    if (typeof window !== 'undefined') {
+      const savedCaravans = localStorage.getItem('admin_caravans');
+      if (savedCaravans) {
+        try {
+          const parsed = JSON.parse(savedCaravans);
+          if (Array.isArray(parsed) && parsed.length > 0) {
+            setCaravans(parsed);
+          }
+        } catch (e) {
+          console.error('Error loading caravans from localStorage:', e);
+        }
+      }
     }
   }, []);
   return (
@@ -27,11 +38,22 @@ export default function CaravansPage() {
 
       <section className="section-padding">
         <div className="container-custom">
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-            {caravans.map(caravan => (
-              <CaravanCard key={caravan.id} caravan={caravan} />
-            ))}
-          </div>
+          {!isClient ? (
+            <div className="text-center py-12">
+              <p className="text-gray-600">Loading caravans...</p>
+            </div>
+          ) : caravans.length === 0 ? (
+            <div className="text-center py-12">
+              <p className="text-gray-600 mb-4">No caravans available at the moment.</p>
+              <p className="text-sm text-gray-500">Please check back later or contact us for availability.</p>
+            </div>
+          ) : (
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+              {caravans.map(caravan => (
+                <CaravanCard key={caravan.id} caravan={caravan} />
+              ))}
+            </div>
+          )}
         </div>
       </section>
     </div>

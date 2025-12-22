@@ -11,17 +11,35 @@ import CaravanSiteCard from '@/components/CaravanSiteCard';
 export default function Home() {
   const [caravans, setCaravans] = useState(initialCaravans);
   const [sites, setSites] = useState(initialSites);
+  const [isClient, setIsClient] = useState(false);
 
   useEffect(() => {
+    setIsClient(true);
     // Load from localStorage if available
-    const savedCaravans = localStorage.getItem('admin_caravans');
-    const savedSites = localStorage.getItem('admin_sites');
-    
-    if (savedCaravans) {
-      setCaravans(JSON.parse(savedCaravans));
-    }
-    if (savedSites) {
-      setSites(JSON.parse(savedSites));
+    if (typeof window !== 'undefined') {
+      const savedCaravans = localStorage.getItem('admin_caravans');
+      const savedSites = localStorage.getItem('admin_sites');
+      
+      if (savedCaravans) {
+        try {
+          const parsed = JSON.parse(savedCaravans);
+          if (Array.isArray(parsed) && parsed.length > 0) {
+            setCaravans(parsed);
+          }
+        } catch (e) {
+          console.error('Error loading caravans from localStorage:', e);
+        }
+      }
+      if (savedSites) {
+        try {
+          const parsed = JSON.parse(savedSites);
+          if (Array.isArray(parsed) && parsed.length > 0) {
+            setSites(parsed);
+          }
+        } catch (e) {
+          console.error('Error loading sites from localStorage:', e);
+        }
+      }
     }
   }, []);
 

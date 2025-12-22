@@ -6,12 +6,23 @@ import CaravanSiteCard from '@/components/CaravanSiteCard';
 
 export default function CaravanSitesPage() {
   const [sites, setSites] = useState(initialSites);
+  const [isClient, setIsClient] = useState(false);
 
   useEffect(() => {
+    setIsClient(true);
     // Load from localStorage if available
-    const savedSites = localStorage.getItem('admin_sites');
-    if (savedSites) {
-      setSites(JSON.parse(savedSites));
+    if (typeof window !== 'undefined') {
+      const savedSites = localStorage.getItem('admin_sites');
+      if (savedSites) {
+        try {
+          const parsed = JSON.parse(savedSites);
+          if (Array.isArray(parsed) && parsed.length > 0) {
+            setSites(parsed);
+          }
+        } catch (e) {
+          console.error('Error loading sites from localStorage:', e);
+        }
+      }
     }
   }, []);
   return (
@@ -39,11 +50,22 @@ export default function CaravanSitesPage() {
             </p>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 lg:gap-10">
-            {sites.map(site => (
-              <CaravanSiteCard key={site.id} site={site} />
-            ))}
-          </div>
+          {!isClient ? (
+            <div className="text-center py-12">
+              <p className="text-gray-600">Loading caravan sites...</p>
+            </div>
+          ) : sites.length === 0 ? (
+            <div className="text-center py-12">
+              <p className="text-gray-600 mb-4">No caravan sites available at the moment.</p>
+              <p className="text-sm text-gray-500">Please check back later.</p>
+            </div>
+          ) : (
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 lg:gap-10">
+              {sites.map(site => (
+                <CaravanSiteCard key={site.id} site={site} />
+              ))}
+            </div>
+          )}
 
           <div className="mt-16 bg-white rounded-2xl shadow-lg p-8 md:p-12 border border-gray-100">
             <h3 className="text-2xl font-extrabold text-gray-900 mb-4 tracking-tight">Booking Information</h3>
