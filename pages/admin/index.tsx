@@ -364,6 +364,8 @@ function CaravanForm({
 
   const [newFeature, setNewFeature] = useState('');
   const [newImage, setNewImage] = useState('');
+  const [uploading, setUploading] = useState(false);
+  const [uploadProgress, setUploadProgress] = useState<{ [key: number]: boolean }>({});
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -406,6 +408,82 @@ function CaravanForm({
         images: [...(formData.images || []), newImage.trim()],
       });
       setNewImage('');
+    }
+  };
+
+  const handleImageUpload = async (file: File, index?: number) => {
+    if (!file) return;
+
+    // Validate file type
+    if (!file.type.startsWith('image/')) {
+      alert('Please select an image file');
+      return;
+    }
+
+    // Validate file size (max 10MB)
+    if (file.size > 10 * 1024 * 1024) {
+      alert('Image size must be less than 10MB');
+      return;
+    }
+
+    setUploading(true);
+    if (index !== undefined) {
+      setUploadProgress({ ...uploadProgress, [index]: true });
+    }
+
+    try {
+      // Convert file to base64
+      const reader = new FileReader();
+      reader.onloadend = async () => {
+        const base64Image = reader.result as string;
+
+        try {
+          // Upload to API
+          const response = await fetch('/api/upload', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ image: base64Image }),
+          });
+
+          const data = await response.json();
+
+          if (data.success && data.url) {
+            if (index !== undefined) {
+              // Update existing image
+              const newImages = [...(formData.images || [])];
+              newImages[index] = data.url;
+              setFormData({ ...formData, images: newImages });
+              setUploadProgress({ ...uploadProgress, [index]: false });
+            } else {
+              // Add new image
+              setFormData({
+                ...formData,
+                images: [...(formData.images || []), data.url],
+              });
+            }
+          } else {
+            alert('Failed to upload image. Please try again.');
+          }
+        } catch (error) {
+          console.error('Upload error:', error);
+          alert('Error uploading image. Please try again.');
+        } finally {
+          setUploading(false);
+          if (index !== undefined) {
+            setUploadProgress({ ...uploadProgress, [index]: false });
+          }
+        }
+      };
+      reader.readAsDataURL(file);
+    } catch (error) {
+      console.error('Error reading file:', error);
+      alert('Error reading image file. Please try again.');
+      setUploading(false);
+      if (index !== undefined) {
+        setUploadProgress({ ...uploadProgress, [index]: false });
+      }
     }
   };
 
@@ -507,47 +585,92 @@ function CaravanForm({
 
         <div>
           <label className="block text-sm font-semibold text-gray-700 mb-2">Images *</label>
-          <div className="space-y-2 mb-2">
+          <div className="space-y-3">
             {formData.images?.map((img, idx) => (
-              <div key={idx} className="flex items-center space-x-2">
-                <input
-                  type="url"
-                  value={img}
-                  onChange={(e) => {
-                    const newImages = [...(formData.images || [])];
-                    newImages[idx] = e.target.value;
-                    setFormData({ ...formData, images: newImages });
-                  }}
-                  className="flex-1 px-4 py-2 border-2 border-gray-200 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500"
-                  placeholder="Image URL"
-                />
-                {formData.images && formData.images.length > 1 && (
-                  <button
-                    type="button"
-                    onClick={() => removeImage(idx)}
-                    className="px-3 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700"
-                  >
-                    Remove
-                  </button>
+              <div key={idx} className="space-y-2">
+                <div className="flex items-center space-x-2">
+                  <input
+                    type="url"
+                    value={img}
+                    onChange={(e) => {
+                      const newImages = [...(formData.images || [])];
+                      newImages[idx] = e.target.value;
+                      setFormData({ ...formData, images: newImages });
+                    }}
+                    className="flex-1 px-4 py-2 border-2 border-gray-200 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500"
+                    placeholder="Image URL"
+                  />
+                  <label className="px-4 py-2 bg-secondary-600 text-white rounded-lg hover:bg-secondary-700 transition-colors font-semibold cursor-pointer">
+                    {uploadProgress[idx] ? 'Uploading...' : 'Upload'}
+                    <input
+                      type="file"
+                      accept="image/*"
+                      className="hidden"
+                      onChange={(e) => {
+                        const file = e.target.files?.[0];
+                        if (file) handleImageUpload(file, idx);
+                      }}
+                      disabled={uploading || uploadProgress[idx]}
+                    />
+                  </label>
+                  {formData.images && formData.images.length > 1 && (
+                    <button
+                      type="button"
+                      onClick={() => removeImage(idx)}
+                      className="px-3 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700"
+                    >
+                      Remove
+                    </button>
+                  )}
+                </div>
+                {img && (
+                  <div className="relative h-32 w-full rounded-lg overflow-hidden border-2 border-gray-200">
+                    <Image
+                      src={img}
+                      alt={`Preview ${idx + 1}`}
+                      fill
+                      className="object-cover"
+                      onError={(e) => {
+                        console.error('Image failed to load:', img);
+                      }}
+                    />
+                  </div>
                 )}
               </div>
             ))}
-          </div>
-          <div className="flex space-x-2">
-            <input
-              type="url"
-              value={newImage}
-              onChange={(e) => setNewImage(e.target.value)}
-              placeholder="Add image URL"
-              className="flex-1 px-4 py-2 border-2 border-gray-200 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500"
-            />
-            <button
-              type="button"
-              onClick={addImage}
-              className="px-4 py-2 bg-primary-600 text-white rounded-lg hover:bg-primary-700"
-            >
-              Add
-            </button>
+            <div className="flex space-x-2">
+              <input
+                type="url"
+                value={newImage}
+                onChange={(e) => setNewImage(e.target.value)}
+                placeholder="Or paste image URL"
+                className="flex-1 px-4 py-2 border-2 border-gray-200 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500"
+              />
+              <label className="px-4 py-2 bg-primary-600 text-white rounded-lg hover:bg-primary-700 transition-colors font-semibold cursor-pointer">
+                {uploading ? 'Uploading...' : 'Upload Image'}
+                <input
+                  type="file"
+                  accept="image/*"
+                  className="hidden"
+                  onChange={(e) => {
+                    const file = e.target.files?.[0];
+                    if (file) handleImageUpload(file);
+                  }}
+                  disabled={uploading}
+                />
+              </label>
+              <button
+                type="button"
+                onClick={addImage}
+                disabled={!newImage.trim()}
+                className="px-4 py-2 bg-gray-600 text-white rounded-lg hover:bg-gray-700 transition-colors font-semibold disabled:opacity-50 disabled:cursor-not-allowed"
+              >
+                Add URL
+              </button>
+            </div>
+            <p className="text-xs text-gray-500">
+              Upload images (max 10MB) or paste image URLs. At least one image is required.
+            </p>
           </div>
         </div>
 
@@ -670,6 +793,7 @@ function SiteForm({
 
   const [newFeature, setNewFeature] = useState('');
   const [newFacility, setNewFacility] = useState('');
+  const [uploadingSiteImage, setUploadingSiteImage] = useState(false);
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -708,6 +832,57 @@ function SiteForm({
       ...formData,
       facilities: formData.facilities?.filter((_, i) => i !== index) || [],
     });
+  };
+
+  const handleSiteImageUpload = async (file: File) => {
+    if (!file) return;
+
+    if (!file.type.startsWith('image/')) {
+      alert('Please select an image file');
+      return;
+    }
+
+    if (file.size > 10 * 1024 * 1024) {
+      alert('Image size must be less than 10MB');
+      return;
+    }
+
+    setUploadingSiteImage(true);
+
+    try {
+      const reader = new FileReader();
+      reader.onloadend = async () => {
+        const base64Image = reader.result as string;
+
+        try {
+          const response = await fetch('/api/upload', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ image: base64Image }),
+          });
+
+          const data = await response.json();
+
+          if (data.success && data.url) {
+            setFormData({ ...formData, image: data.url });
+          } else {
+            alert('Failed to upload image. Please try again.');
+          }
+        } catch (error) {
+          console.error('Upload error:', error);
+          alert('Error uploading image. Please try again.');
+        } finally {
+          setUploadingSiteImage(false);
+        }
+      };
+      reader.readAsDataURL(file);
+    } catch (error) {
+      console.error('Error reading file:', error);
+      alert('Error reading image file. Please try again.');
+      setUploadingSiteImage(false);
+    }
   };
 
   return (
@@ -752,14 +927,45 @@ function SiteForm({
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           <div>
-            <label className="block text-sm font-semibold text-gray-700 mb-2">Image URL *</label>
-            <input
-              type="url"
-              required
-              value={formData.image}
-              onChange={(e) => setFormData({ ...formData, image: e.target.value })}
-              className="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:ring-2 focus:ring-primary-500 focus:border-primary-500"
-            />
+            <label className="block text-sm font-semibold text-gray-700 mb-2">Image *</label>
+            <div className="space-y-2">
+              <div className="flex items-center space-x-2">
+                <input
+                  type="url"
+                  required
+                  value={formData.image}
+                  onChange={(e) => setFormData({ ...formData, image: e.target.value })}
+                  className="flex-1 px-4 py-3 border-2 border-gray-200 rounded-xl focus:ring-2 focus:ring-primary-500 focus:border-primary-500"
+                  placeholder="Image URL"
+                />
+                <label className="px-4 py-3 bg-secondary-600 text-white rounded-xl hover:bg-secondary-700 transition-colors font-semibold cursor-pointer">
+                  {uploadingSiteImage ? 'Uploading...' : 'Upload'}
+                  <input
+                    type="file"
+                    accept="image/*"
+                    className="hidden"
+                    onChange={(e) => {
+                      const file = e.target.files?.[0];
+                      if (file) handleSiteImageUpload(file);
+                    }}
+                    disabled={uploadingSiteImage}
+                  />
+                </label>
+              </div>
+              {formData.image && (
+                <div className="relative h-32 w-full rounded-lg overflow-hidden border-2 border-gray-200">
+                  <Image
+                    src={formData.image}
+                    alt="Site preview"
+                    fill
+                    className="object-cover"
+                    onError={(e) => {
+                      console.error('Image failed to load:', formData.image);
+                    }}
+                  />
+                </div>
+              )}
+            </div>
           </div>
           <div>
             <label className="block text-sm font-semibold text-gray-700 mb-2">Website URL *</label>
