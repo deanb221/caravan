@@ -3,7 +3,7 @@
 
 export const bookingConfig = {
   // Choose: 'email' | 'calendly' | 'google-calendar' | 'api' | 'custom'
-  method: 'email' as 'email' | 'calendly' | 'google-calendar' | 'api' | 'custom',
+  method: 'api' as 'email' | 'calendly' | 'google-calendar' | 'api' | 'custom',
   
   // Email Configuration
   email: {
