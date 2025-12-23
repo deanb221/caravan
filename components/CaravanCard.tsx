@@ -37,15 +37,15 @@ export default function CaravanCard({ caravan }: CaravanCardProps) {
           <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
           <div className="absolute top-4 left-4 flex flex-col gap-2">
             <div className="bg-green-600 text-white px-3 py-1.5 rounded-full text-xs font-semibold shadow-lg backdrop-blur-sm">
-              ✓ Gas Safe
+              Gas Safe
             </div>
             <div className="bg-blue-600 text-white px-3 py-1.5 rounded-full text-xs font-semibold shadow-lg backdrop-blur-sm">
-              ✓ EIC Inspected
+              EIC Inspected
             </div>
           </div>
           {caravan.petFriendly && (
             <div className="absolute top-4 right-4 bg-gradient-to-r from-primary-600 to-primary-700 text-white px-4 py-2 rounded-full text-xs font-semibold shadow-lg backdrop-blur-sm">
-              🐾 Pet Friendly
+              Pet Friendly
             </div>
           )}
         </div>
