@@ -57,7 +57,7 @@ export default function Home() {
         <div className="relative container-custom section-padding">
           <div className="max-w-4xl mx-auto text-center">
             <div className="inline-block mb-6 px-5 py-2.5 bg-white/20 backdrop-blur-sm rounded-full text-sm font-semibold border border-white/30 tracking-tight">
-              ✨ Northern Ireland's Premier Touring Caravan Hire
+              Northern Ireland's Premier Touring Caravan Hire
             </div>
             <h1 className="text-5xl md:text-6xl lg:text-7xl font-extrabold mb-6 leading-tight tracking-tight">
               Explore Northern Ireland with{' '}
