@@ -83,7 +83,7 @@ export default function ContactPage() {
                     value={formData.phone}
                     onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
                     className="w-full px-4 py-3.5 border-2 border-gray-200 rounded-xl focus:ring-2 focus:ring-primary-500 focus:border-primary-500 transition-all duration-200 bg-gray-50 focus:bg-white"
-                    placeholder="028 1234 5678"
+                    placeholder="02891 314757"
                   />
                 </div>
 
@@ -122,8 +122,8 @@ export default function ContactPage() {
                     </div>
                     <div>
                       <h3 className="font-semibold text-gray-900 mb-1">Email</h3>
-                      <a href="mailto:info@nicaravanhire.com" className="text-primary-600 hover:text-primary-700">
-                        info@nicaravanhire.com
+                      <a href="mailto:booking@nicaravanhire.co.uk" className="text-primary-600 hover:text-primary-700">
+                        booking@nicaravanhire.co.uk
                       </a>
                     </div>
                   </div>
@@ -136,8 +136,8 @@ export default function ContactPage() {
                     </div>
                     <div>
                       <h3 className="font-semibold text-gray-900 mb-1">Phone</h3>
-                      <a href="tel:02812345678" className="text-primary-600 hover:text-primary-700">
-                        028 1234 5678
+                      <a href="tel:02891314757" className="text-primary-600 hover:text-primary-700">
+                        02891 314757
                       </a>
                     </div>
                   </div>

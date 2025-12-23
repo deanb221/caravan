@@ -25,10 +25,10 @@ export default function Footer() {
             </p>
             <div className="space-y-2">
               <p className="text-sm">
-                <span className="font-semibold">Email:</span> info@nicaravanhire.com
+                <span className="font-semibold">Email:</span> booking@nicaravanhire.co.uk
               </p>
               <p className="text-sm">
-                <span className="font-semibold">Phone:</span> 028 1234 5678
+                <span className="font-semibold">Phone:</span> 02891 314757
               </p>
             </div>
           </div>
