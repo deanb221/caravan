@@ -34,14 +34,42 @@ export default function AdminPage() {
     }
   }, []);
 
-  const saveCaravans = (newCaravans: Caravan[]) => {
+  const saveCaravans = async (newCaravans: Caravan[]) => {
     setCaravans(newCaravans);
     localStorage.setItem('admin_caravans', JSON.stringify(newCaravans));
+    
+    // Also save to server (JSON file)
+    try {
+      const response = await fetch('/api/data/caravans', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(newCaravans),
+      });
+      if (response.ok) {
+        console.log('Caravans saved to server');
+      }
+    } catch (error) {
+      console.error('Error saving to server:', error);
+    }
   };
 
-  const saveSites = (newSites: CaravanSite[]) => {
+  const saveSites = async (newSites: CaravanSite[]) => {
     setSites(newSites);
     localStorage.setItem('admin_sites', JSON.stringify(newSites));
+    
+    // Also save to server (JSON file)
+    try {
+      const response = await fetch('/api/data/sites', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(newSites),
+      });
+      if (response.ok) {
+        console.log('Sites saved to server');
+      }
+    } catch (error) {
+      console.error('Error saving to server:', error);
+    }
   };
 
   const exportData = () => {
@@ -59,7 +87,37 @@ export default function AdminPage() {
     a.click();
     document.body.removeChild(a);
     URL.revokeObjectURL(url);
-    alert('Data exported successfully! You can now update the data files with this JSON.');
+  };
+  
+  const updateLiveSite = async () => {
+    try {
+      // Save to server JSON files
+      const [caravansRes, sitesRes] = await Promise.all([
+        fetch('/api/data/caravans', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(caravans),
+        }),
+        fetch('/api/data/sites', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(sites),
+        }),
+      ]);
+      
+      if (caravansRes.ok && sitesRes.ok) {
+        // Also export for manual backup
+        exportData();
+        alert('✅ Data saved to server!\n\nNext steps:\n1. The JSON files have been updated\n2. Commit and push to git:\n   git add data/caravans.json data/caravanSites.json\n   git commit -m "Update caravan data"\n   git push\n3. Vercel will rebuild automatically\n4. Request Google re-indexing after deployment');
+      } else {
+        throw new Error('Failed to save to server');
+      }
+    } catch (error) {
+      console.error('Error updating live site:', error);
+      // Fallback to export
+      exportData();
+      alert('⚠️ Could not save to server automatically.\n\nData has been exported. Please:\n1. Open data/caravans.json and data/caravanSites.json\n2. Replace their contents with the exported data\n3. Commit and push to git');
+    }
   };
 
   const importData = (event: React.ChangeEvent<HTMLInputElement>) => {
