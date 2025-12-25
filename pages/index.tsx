@@ -308,10 +308,14 @@ export const getStaticProps: GetStaticProps = async () => {
       getCaravanSites(),
     ]);
 
+    // Only use fetched data if it exists, otherwise use initial (which has fallback)
+    const finalCaravans = Array.isArray(caravans) && caravans.length > 0 ? caravans : initialCaravans;
+    const finalSites = Array.isArray(sites) && sites.length > 0 ? sites : initialSites;
+
     return {
       props: {
-        caravans: Array.isArray(caravans) && caravans.length > 0 ? caravans : initialCaravans,
-        sites: Array.isArray(sites) && sites.length > 0 ? sites : initialSites,
+        caravans: finalCaravans,
+        sites: finalSites,
       },
       revalidate: 60, // Revalidate every minute (faster updates)
     };
@@ -322,7 +326,7 @@ export const getStaticProps: GetStaticProps = async () => {
         caravans: initialCaravans,
         sites: initialSites,
       },
-      revalidate: 3600,
+      revalidate: 60,
     };
   }
 };

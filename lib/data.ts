@@ -47,6 +47,8 @@ export async function getCaravans(): Promise<Caravan[]> {
     console.error('Error reading JSON file:', error);
   }
 
+  // Final fallback: return empty array (let pages use their fallback data)
+  // This ensures we don't return placeholder data if JSON is empty
   return [];
 }
 

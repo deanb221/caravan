@@ -106,14 +106,14 @@ export default function AdminPage() {
   
   const updateLiveSite = async () => {
     try {
-      // Save to server JSON files
+      // Try to save to Supabase/database first
       const [caravansRes, sitesRes] = await Promise.all([
-        fetch('/api/data/caravans', {
+        fetch('/api/caravans', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify(caravans),
         }),
-        fetch('/api/data/sites', {
+        fetch('/api/sites', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify(sites),
@@ -121,17 +121,26 @@ export default function AdminPage() {
       ]);
       
       if (caravansRes.ok && sitesRes.ok) {
-        // Also export for manual backup
+        const caravansResult = await caravansRes.json();
+        const sitesResult = await sitesRes.json();
+        
+        // Check if saved to database
+        if (caravansResult.message?.includes('database') || sitesResult.message?.includes('database')) {
+          alert('✅ Data saved to database!\n\nYour changes are now live! Google will see the new data on the next crawl (usually within 24-48 hours).\n\nTo speed it up, use Google Search Console to request re-indexing (see FORCE_GOOGLE_REINDEX.md)');
+          return;
+        }
+        
+        // If saved to file, still need to commit
         exportData();
-        alert('✅ Data saved to server!\n\nNext steps:\n1. The JSON files have been updated\n2. Commit and push to git:\n   git add data/caravans.json data/caravanSites.json\n   git commit -m "Update caravan data"\n   git push\n3. Vercel will rebuild automatically\n4. Request Google re-indexing after deployment');
+        alert('✅ Data saved!\n\n⚠️ IMPORTANT: The JSON files have been updated, but you need to commit them to git for Google to see the changes:\n\n1. Run these commands:\n   git add data/caravans.json data/caravanSites.json\n   git commit -m "Update data from admin"\n   git push\n\n2. Wait for Vercel to rebuild (2-5 minutes)\n\n3. Request Google re-indexing (see FORCE_GOOGLE_REINDEX.md)');
       } else {
-        throw new Error('Failed to save to server');
+        throw new Error('Failed to save');
       }
     } catch (error) {
       console.error('Error updating live site:', error);
       // Fallback to export
       exportData();
-      alert('⚠️ Could not save to server automatically.\n\nData has been exported. Please:\n1. Open data/caravans.json and data/caravanSites.json\n2. Replace their contents with the exported data\n3. Commit and push to git');
+      alert('⚠️ Could not save automatically.\n\nData has been exported. You need to:\n\n1. Open the downloaded JSON file\n2. Copy the "caravans" array → paste into data/caravans.json\n3. Copy the "caravanSites" array → paste into data/caravanSites.json\n4. Run: git add data/ && git commit -m "Update" && git push\n\nSee GET_ADMIN_DATA_LIVE.md for detailed steps.');
     }
   };
 
