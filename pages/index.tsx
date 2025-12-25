@@ -300,12 +300,33 @@ export default function Home({ caravans: serverCaravans, sites: serverSites }: H
 }
 
 export const getStaticProps: GetStaticProps = async () => {
-  return {
-    props: {
-      caravans: initialCaravans,
-      sites: initialSites,
-    },
-    revalidate: 3600, // Revalidate every hour
-  };
+  // Try to fetch from API (database), fallback to static data
+  try {
+    const baseUrl = process.env.NEXT_PUBLIC_SITE_URL || 'http://localhost:3000';
+    const [caravansRes, sitesRes] = await Promise.all([
+      fetch(`${baseUrl}/api/caravans`).catch(() => null),
+      fetch(`${baseUrl}/api/sites`).catch(() => null),
+    ]);
+
+    const caravans = caravansRes?.ok ? await caravansRes.json() : initialCaravans;
+    const sites = sitesRes?.ok ? await sitesRes.json() : initialSites;
+
+    return {
+      props: {
+        caravans: Array.isArray(caravans) && caravans.length > 0 ? caravans : initialCaravans,
+        sites: Array.isArray(sites) && sites.length > 0 ? sites : initialSites,
+      },
+      revalidate: 60, // Revalidate every minute (faster updates)
+    };
+  } catch (error) {
+    console.error('Error fetching data:', error);
+    return {
+      props: {
+        caravans: initialCaravans,
+        sites: initialSites,
+      },
+      revalidate: 3600,
+    };
+  }
 };
 

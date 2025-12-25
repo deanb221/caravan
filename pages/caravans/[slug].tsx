@@ -304,7 +304,22 @@ export default function CaravanDetailPage({ caravan: serverCaravan, allCaravans:
 }
 
 export const getStaticPaths: GetStaticPaths = async () => {
-  const paths = initialCaravans.map((caravan) => ({
+  // Try to fetch from API first
+  let caravans = initialCaravans;
+  try {
+    const baseUrl = process.env.NEXT_PUBLIC_SITE_URL || 'http://localhost:3000';
+    const res = await fetch(`${baseUrl}/api/caravans`).catch(() => null);
+    if (res?.ok) {
+      const data = await res.json();
+      if (Array.isArray(data) && data.length > 0) {
+        caravans = data;
+      }
+    }
+  } catch (error) {
+    console.error('Error fetching caravans for paths:', error);
+  }
+
+  const paths = caravans.map((caravan) => ({
     params: { slug: caravan.slug },
   }));
 
@@ -316,7 +331,23 @@ export const getStaticPaths: GetStaticPaths = async () => {
 
 export const getStaticProps: GetStaticProps = async ({ params }) => {
   const slug = params?.slug as string;
-  const caravan = getCaravanBySlug(slug);
+  
+  // Try to fetch from API first
+  let caravans = initialCaravans;
+  try {
+    const baseUrl = process.env.NEXT_PUBLIC_SITE_URL || 'http://localhost:3000';
+    const res = await fetch(`${baseUrl}/api/caravans`).catch(() => null);
+    if (res?.ok) {
+      const data = await res.json();
+      if (Array.isArray(data) && data.length > 0) {
+        caravans = data;
+      }
+    }
+  } catch (error) {
+    console.error('Error fetching caravans:', error);
+  }
+
+  const caravan = caravans.find(c => c.slug === slug);
 
   if (!caravan) {
     return {
@@ -327,9 +358,9 @@ export const getStaticProps: GetStaticProps = async ({ params }) => {
   return {
     props: {
       caravan,
-      allCaravans: initialCaravans,
+      allCaravans: caravans,
     },
-    revalidate: 3600, // Revalidate every hour
+    revalidate: 60, // Revalidate every minute (faster updates)
   };
 };
 

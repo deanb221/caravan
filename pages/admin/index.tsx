@@ -38,18 +38,24 @@ export default function AdminPage() {
     setCaravans(newCaravans);
     localStorage.setItem('admin_caravans', JSON.stringify(newCaravans));
     
-    // Also save to server (JSON file)
+    // Save to database/API (automatic!)
     try {
-      const response = await fetch('/api/data/caravans', {
+      const response = await fetch('/api/caravans', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(newCaravans),
       });
       if (response.ok) {
-        console.log('Caravans saved to server');
+        const result = await response.json();
+        console.log('✅ Caravans saved:', result.message);
+        // Show success message
+        alert(`✅ ${result.message || 'Caravans saved successfully!'}\n\nYour changes are now live on the website!`);
+      } else {
+        throw new Error('Failed to save');
       }
     } catch (error) {
       console.error('Error saving to server:', error);
+      alert('⚠️ Could not save automatically. Your changes are saved locally. Please use "Export Data" to update manually.');
     }
   };
 
@@ -57,18 +63,23 @@ export default function AdminPage() {
     setSites(newSites);
     localStorage.setItem('admin_sites', JSON.stringify(newSites));
     
-    // Also save to server (JSON file)
+    // Save to database/API (automatic!)
     try {
-      const response = await fetch('/api/data/sites', {
+      const response = await fetch('/api/sites', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(newSites),
       });
       if (response.ok) {
-        console.log('Sites saved to server');
+        const result = await response.json();
+        console.log('✅ Sites saved:', result.message);
+        alert(`✅ ${result.message || 'Sites saved successfully!'}\n\nYour changes are now live on the website!`);
+      } else {
+        throw new Error('Failed to save');
       }
     } catch (error) {
       console.error('Error saving to server:', error);
+      alert('⚠️ Could not save automatically. Your changes are saved locally. Please use "Export Data" to update manually.');
     }
   };
 

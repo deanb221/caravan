@@ -68,11 +68,26 @@ export default function CaravansPage({ caravans: serverCaravans }: CaravansPageP
 }
 
 export const getStaticProps: GetStaticProps = async () => {
-  return {
-    props: {
-      caravans: initialCaravans,
-    },
-    revalidate: 3600, // Revalidate every hour
-  };
+  // Try to fetch from API (database), fallback to static data
+  try {
+    const baseUrl = process.env.NEXT_PUBLIC_SITE_URL || 'http://localhost:3000';
+    const caravansRes = await fetch(`${baseUrl}/api/caravans`).catch(() => null);
+    const caravans = caravansRes?.ok ? await caravansRes.json() : initialCaravans;
+
+    return {
+      props: {
+        caravans: Array.isArray(caravans) && caravans.length > 0 ? caravans : initialCaravans,
+      },
+      revalidate: 60, // Revalidate every minute (faster updates)
+    };
+  } catch (error) {
+    console.error('Error fetching data:', error);
+    return {
+      props: {
+        caravans: initialCaravans,
+      },
+      revalidate: 3600,
+    };
+  }
 };
 
