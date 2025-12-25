@@ -1,16 +1,20 @@
-'use client';
-
+import { GetStaticProps } from 'next';
 import { useState, useEffect } from 'react';
 import { caravanSites as initialSites } from '@/data/caravanSites';
 import CaravanSiteCard from '@/components/CaravanSiteCard';
+import { CaravanSite } from '@/types';
 
-export default function CaravanSitesPage() {
-  const [sites, setSites] = useState(initialSites);
+interface CaravanSitesPageProps {
+  sites: CaravanSite[];
+}
+
+export default function CaravanSitesPage({ sites: serverSites }: CaravanSitesPageProps) {
+  const [sites, setSites] = useState(serverSites);
   const [isClient, setIsClient] = useState(false);
 
   useEffect(() => {
     setIsClient(true);
-    // Load from localStorage if available
+    // Load from localStorage if available (progressive enhancement)
     if (typeof window !== 'undefined') {
       const savedSites = localStorage.getItem('admin_sites');
       if (savedSites) {
