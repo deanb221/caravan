@@ -40,6 +40,7 @@ export default function CaravanDetailPage({ caravan: serverCaravan, allCaravans:
     }
   }, [router.query]);
   const [selectedImage, setSelectedImage] = useState(0);
+  const [lightboxImage, setLightboxImage] = useState<number | null>(null);
   const [startDate, setStartDate] = useState<Date | null>(null);
   const [endDate, setEndDate] = useState<Date | null>(null);
 
