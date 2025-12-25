@@ -48,12 +48,17 @@ NEXT_PUBLIC_SITE_URL=https://www.nicaravanhire.co.uk
 
 ## Getting Supabase Credentials
 
+See **`FIND_SUPABASE_KEYS.md`** for detailed step-by-step instructions with screenshots guide.
+
+Quick version:
 1. Go to https://supabase.com/dashboard
 2. Select your project
-3. Go to **Settings** > **API**
+3. Go to **Settings** (⚙️) > **API**
 4. Copy:
-   - **Project URL** → `NEXT_PUBLIC_SUPABASE_URL`
-   - **anon/public key** → `NEXT_PUBLIC_SUPABASE_ANON_KEY`
+   - **Project URL** (looks like `https://xxxxx.supabase.co`) → `NEXT_PUBLIC_SUPABASE_URL`
+   - **anon/public key** (long string starting with `eyJ...`) → `NEXT_PUBLIC_SUPABASE_ANON_KEY`
+   
+**Important:** Use the **anon/public** key, NOT the service_role key!
 
 ## After Adding Variables
 
