@@ -51,6 +51,7 @@ export default function Home({ caravans: serverCaravans, sites: serverSites }: H
 
   const featuredCaravans = caravans.slice(0, 3);
   const featuredSites = sites.slice(0, 3);
+  const featuredSites = sites.slice(0, 3);
 
   return (
     <>

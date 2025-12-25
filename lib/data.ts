@@ -12,7 +12,10 @@ export async function getCaravans(): Promise<Caravan[]> {
         .select('*')
         .order('created_at', { ascending: false });
 
-      if (!error && data && data.length > 0) {
+      if (error) {
+        console.error('Supabase error fetching caravans:', error);
+      } else if (data && data.length > 0) {
+        console.log(`✅ Fetched ${data.length} caravans from Supabase`);
         return data.map((row: any) => ({
           id: row.id,
           name: row.name,
@@ -27,10 +30,14 @@ export async function getCaravans(): Promise<Caravan[]> {
           pricing: row.pricing || { weekend: 0, weekly: 0, peakSeason: 0 },
           availability: row.availability || { bookedDates: [] },
         }));
+      } else {
+        console.log('⚠️ Supabase returned empty data for caravans');
       }
     } catch (error) {
       console.error('Error fetching from Supabase:', error);
     }
+  } else {
+    console.warn('⚠️ Supabase client not initialized');
   }
 
   // Fallback to JSON file
@@ -61,7 +68,10 @@ export async function getCaravanSites(): Promise<CaravanSite[]> {
         .select('*')
         .order('created_at', { ascending: false });
 
-      if (!error && data && data.length > 0) {
+      if (error) {
+        console.error('Supabase error fetching sites:', error);
+      } else if (data && data.length > 0) {
+        console.log(`✅ Fetched ${data.length} sites from Supabase`);
         return data.map((row: any) => ({
           id: row.id,
           name: row.name,
@@ -73,10 +83,14 @@ export async function getCaravanSites(): Promise<CaravanSite[]> {
           rating: row.rating || 0,
           facilities: row.facilities || [],
         }));
+      } else {
+        console.log('⚠️ Supabase returned empty data for sites');
       }
     } catch (error) {
       console.error('Error fetching from Supabase:', error);
     }
+  } else {
+    console.warn('⚠️ Supabase client not initialized');
   }
 
   // Fallback to JSON file
