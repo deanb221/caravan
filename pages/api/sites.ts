@@ -55,14 +55,14 @@ export default async function handler(
   }
 
   if (req.method === 'POST') {
+    const sites: CaravanSite[] = req.body;
+
+    if (!Array.isArray(sites)) {
+      return res.status(400).json({ error: 'Data must be an array' });
+    }
+
+    // Try to save to Supabase
     try {
-      const sites: CaravanSite[] = req.body;
-
-      if (!Array.isArray(sites)) {
-        return res.status(400).json({ error: 'Data must be an array' });
-      }
-
-      // Try to save to Supabase
       if (supabase) {
         const dbRows = sites.map((site) => ({
           id: site.id,
