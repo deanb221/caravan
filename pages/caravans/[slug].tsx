@@ -1,30 +1,44 @@
-'use client';
-
+import { GetStaticProps, GetStaticPaths } from 'next';
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/router';
 import Image from 'next/image';
-import { getCaravanBySlug } from '@/data/caravans';
-import { caravans as initialCaravans } from '@/data/caravans';
+import { getCaravanBySlug, caravans as initialCaravans } from '@/data/caravans';
 import BookingCalendar from '@/components/BookingCalendar';
 import { Caravan } from '@/types';
 
-export default function CaravanDetailPage() {
+interface CaravanDetailPageProps {
+  caravan: Caravan;
+  allCaravans: Caravan[];
+}
+
+export default function CaravanDetailPage({ caravan: serverCaravan, allCaravans: serverCaravans }: CaravanDetailPageProps) {
   const router = useRouter();
-  const { slug } = router.query;
-  const [caravans, setCaravans] = useState<Caravan[]>(initialCaravans);
+  const [caravan, setCaravan] = useState<Caravan>(serverCaravan);
+  const [caravans, setCaravans] = useState<Caravan[]>(serverCaravans);
   
   useEffect(() => {
-    const savedCaravans = localStorage.getItem('admin_caravans');
-    if (savedCaravans) {
-      setCaravans(JSON.parse(savedCaravans));
+    // Load from localStorage if available (progressive enhancement)
+    if (typeof window !== 'undefined') {
+      const savedCaravans = localStorage.getItem('admin_caravans');
+      if (savedCaravans) {
+        try {
+          const parsed = JSON.parse(savedCaravans);
+          if (Array.isArray(parsed) && parsed.length > 0) {
+            setCaravans(parsed);
+            const { slug } = router.query;
+            if (slug) {
+              const updatedCaravan = parsed.find((c: Caravan) => c.slug === slug);
+              if (updatedCaravan) {
+                setCaravan(updatedCaravan);
+              }
+            }
+          }
+        } catch (e) {
+          console.error('Error loading caravans from localStorage:', e);
+        }
+      }
     }
-  }, []);
-  
-  const getCaravan = (slug: string) => {
-    return caravans.find(c => c.slug === slug);
-  };
-  
-  const caravan = router.isReady && slug ? getCaravan(slug as string) : null;
+  }, [router.query]);
   const [selectedImage, setSelectedImage] = useState(0);
   const [startDate, setStartDate] = useState<Date | null>(null);
   const [endDate, setEndDate] = useState<Date | null>(null);
@@ -288,4 +302,34 @@ export default function CaravanDetailPage() {
     </div>
   );
 }
+
+export const getStaticPaths: GetStaticPaths = async () => {
+  const paths = initialCaravans.map((caravan) => ({
+    params: { slug: caravan.slug },
+  }));
+
+  return {
+    paths,
+    fallback: 'blocking', // Generate new pages on-demand if not found
+  };
+};
+
+export const getStaticProps: GetStaticProps = async ({ params }) => {
+  const slug = params?.slug as string;
+  const caravan = getCaravanBySlug(slug);
+
+  if (!caravan) {
+    return {
+      notFound: true,
+    };
+  }
+
+  return {
+    props: {
+      caravan,
+      allCaravans: initialCaravans,
+    },
+    revalidate: 3600, // Revalidate every hour
+  };
+};
 

@@ -1,16 +1,20 @@
-'use client';
-
+import { GetStaticProps } from 'next';
 import { useState, useEffect } from 'react';
 import { caravans as initialCaravans } from '@/data/caravans';
 import CaravanCard from '@/components/CaravanCard';
+import { Caravan } from '@/types';
 
-export default function CaravansPage() {
-  const [caravans, setCaravans] = useState(initialCaravans);
+interface CaravansPageProps {
+  caravans: Caravan[];
+}
+
+export default function CaravansPage({ caravans: serverCaravans }: CaravansPageProps) {
+  const [caravans, setCaravans] = useState(serverCaravans);
   const [isClient, setIsClient] = useState(false);
 
   useEffect(() => {
     setIsClient(true);
-    // Load from localStorage if available
+    // Load from localStorage if available (progressive enhancement)
     if (typeof window !== 'undefined') {
       const savedCaravans = localStorage.getItem('admin_caravans');
       if (savedCaravans) {
@@ -25,6 +29,7 @@ export default function CaravansPage() {
       }
     }
   }, []);
+
   return (
     <div className="bg-gray-50 min-h-screen">
       <section className="section-padding bg-gradient-to-br from-primary-600 to-secondary-700 text-white">
@@ -39,8 +44,10 @@ export default function CaravansPage() {
       <section className="section-padding">
         <div className="container-custom">
           {!isClient ? (
-            <div className="text-center py-12">
-              <p className="text-gray-600">Loading caravans...</p>
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+              {serverCaravans.map(caravan => (
+                <CaravanCard key={caravan.id} caravan={caravan} />
+              ))}
             </div>
           ) : caravans.length === 0 ? (
             <div className="text-center py-12">
@@ -59,4 +66,13 @@ export default function CaravansPage() {
     </div>
   );
 }
+
+export const getStaticProps: GetStaticProps = async () => {
+  return {
+    props: {
+      caravans: initialCaravans,
+    },
+    revalidate: 3600, // Revalidate every hour
+  };
+};
 

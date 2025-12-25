@@ -1,5 +1,4 @@
-'use client';
-
+import { GetStaticProps } from 'next';
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
@@ -7,15 +6,22 @@ import { caravans as initialCaravans } from '@/data/caravans';
 import { caravanSites as initialSites } from '@/data/caravanSites';
 import CaravanCard from '@/components/CaravanCard';
 import CaravanSiteCard from '@/components/CaravanSiteCard';
+import { Caravan } from '@/types';
+import { CaravanSite } from '@/types';
 
-export default function Home() {
-  const [caravans, setCaravans] = useState(initialCaravans);
-  const [sites, setSites] = useState(initialSites);
+interface HomeProps {
+  caravans: Caravan[];
+  sites: CaravanSite[];
+}
+
+export default function Home({ caravans: serverCaravans, sites: serverSites }: HomeProps) {
+  const [caravans, setCaravans] = useState(serverCaravans);
+  const [sites, setSites] = useState(serverSites);
   const [isClient, setIsClient] = useState(false);
 
   useEffect(() => {
     setIsClient(true);
-    // Load from localStorage if available
+    // Load from localStorage if available (progressive enhancement)
     if (typeof window !== 'undefined') {
       const savedCaravans = localStorage.getItem('admin_caravans');
       const savedSites = localStorage.getItem('admin_sites');
@@ -292,4 +298,14 @@ export default function Home() {
     </>
   );
 }
+
+export const getStaticProps: GetStaticProps = async () => {
+  return {
+    props: {
+      caravans: initialCaravans,
+      sites: initialSites,
+    },
+    revalidate: 3600, // Revalidate every hour
+  };
+};
 
