@@ -24,9 +24,10 @@ Supabase is a free, easy-to-use database that will:
 
 ### Step 2: Create Database Tables
 
-In Supabase dashboard, go to "SQL Editor" and run:
+In Supabase dashboard, go to "SQL Editor" and run the SQL from `supabase_setup.sql` file.
 
-```sql
+**OR copy and paste this SQL (without the markdown code blocks):**
+
 -- Create caravans table
 CREATE TABLE caravans (
   id TEXT PRIMARY KEY,
@@ -60,14 +61,19 @@ CREATE TABLE caravan_sites (
   updated_at TIMESTAMP DEFAULT NOW()
 );
 
--- Enable Row Level Security (allow public read, but you'll need auth for write)
+-- Enable Row Level Security
 ALTER TABLE caravans ENABLE ROW LEVEL SECURITY;
 ALTER TABLE caravan_sites ENABLE ROW LEVEL SECURITY;
 
--- Create policies (allow anyone to read, but only authenticated users to write)
+-- Create policies (allow public read and write for admin)
 CREATE POLICY "Allow public read" ON caravans FOR SELECT USING (true);
 CREATE POLICY "Allow public read" ON caravan_sites FOR SELECT USING (true);
-```
+CREATE POLICY "Allow insert" ON caravans FOR INSERT WITH CHECK (true);
+CREATE POLICY "Allow update" ON caravans FOR UPDATE USING (true);
+CREATE POLICY "Allow delete" ON caravans FOR DELETE USING (true);
+CREATE POLICY "Allow insert" ON caravan_sites FOR INSERT WITH CHECK (true);
+CREATE POLICY "Allow update" ON caravan_sites FOR UPDATE USING (true);
+CREATE POLICY "Allow delete" ON caravan_sites FOR DELETE USING (true);
 
 ### Step 3: Add Environment Variables
 
