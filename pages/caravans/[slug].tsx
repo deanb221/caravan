@@ -91,8 +91,11 @@ export default function CaravanDetailPage({ caravan: serverCaravan, allCaravans:
                 {caravan.images.map((image, idx) => (
                   <button
                     key={idx}
-                    onClick={() => setSelectedImage(idx)}
-                    className={`relative h-32 rounded-lg overflow-hidden ${
+                    onClick={() => {
+                      setSelectedImage(idx);
+                      setLightboxImage(idx);
+                    }}
+                    className={`relative h-32 rounded-lg overflow-hidden cursor-pointer hover:opacity-90 transition-opacity ${
                       selectedImage === idx ? 'ring-4 ring-primary-500' : ''
                     }`}
                   >
@@ -300,6 +303,81 @@ export default function CaravanDetailPage({ caravan: serverCaravan, allCaravans:
           </div>
         </div>
       </div>
+
+      {/* Lightbox Modal */}
+      {lightboxImage !== null && (
+        <div 
+          className="fixed inset-0 z-50 bg-black bg-opacity-90 flex items-center justify-center p-4"
+          onClick={() => setLightboxImage(null)}
+        >
+          <button
+            onClick={() => setLightboxImage(null)}
+            className="absolute top-4 right-4 text-white hover:text-gray-300 transition-colors z-10"
+            aria-label="Close"
+          >
+            <svg className="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+            </svg>
+          </button>
+          
+          {/* Previous button */}
+          {caravan.images.length > 1 && lightboxImage > 0 && (
+            <button
+              onClick={(e) => {
+                e.stopPropagation();
+                setLightboxImage(lightboxImage - 1);
+                setSelectedImage(lightboxImage - 1);
+              }}
+              className="absolute left-4 top-1/2 -translate-y-1/2 text-white hover:text-gray-300 transition-colors z-10 bg-black/50 rounded-full p-2"
+              aria-label="Previous image"
+            >
+              <svg className="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
+              </svg>
+            </button>
+          )}
+
+          {/* Next button */}
+          {caravan.images.length > 1 && lightboxImage < caravan.images.length - 1 && (
+            <button
+              onClick={(e) => {
+                e.stopPropagation();
+                setLightboxImage(lightboxImage + 1);
+                setSelectedImage(lightboxImage + 1);
+              }}
+              className="absolute right-4 top-1/2 -translate-y-1/2 text-white hover:text-gray-300 transition-colors z-10 bg-black/50 rounded-full p-2"
+              aria-label="Next image"
+            >
+              <svg className="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+              </svg>
+            </button>
+          )}
+
+          {/* Image */}
+          <div 
+            className="relative max-w-7xl max-h-[90vh] w-full h-full flex items-center justify-center"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <Image
+              src={caravan.images[lightboxImage]}
+              alt={`${caravan.name} - Image ${lightboxImage + 1}`}
+              width={1200}
+              height={800}
+              className="object-contain max-w-full max-h-full"
+              unoptimized={caravan.images[lightboxImage].startsWith('http')}
+              priority
+            />
+          </div>
+
+          {/* Image counter */}
+          {caravan.images.length > 1 && (
+            <div className="absolute bottom-4 left-1/2 -translate-x-1/2 text-white bg-black/50 px-4 py-2 rounded-full text-sm">
+              {lightboxImage + 1} / {caravan.images.length}
+            </div>
+          )}
+        </div>
+      )}
     </div>
   );
 }
