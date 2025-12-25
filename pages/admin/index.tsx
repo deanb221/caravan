@@ -87,6 +87,10 @@ export default function AdminPage() {
     a.click();
     document.body.removeChild(a);
     URL.revokeObjectURL(url);
+    
+    // Show clear instructions
+    const instructions = `✅ Data exported!\n\n📋 Next Steps:\n\n1. Open the downloaded JSON file\n2. Copy the "caravans" array (from [ to ])\n3. Paste into data/caravanSites.json (replace everything)\n4. Copy the "caravanSites" array\n5. Paste into data/caravanSites.json (replace everything)\n6. Run: git add data/ && git commit -m "Update data" && git push\n\n📖 See GET_ADMIN_DATA_LIVE.md for detailed instructions`;
+    setTimeout(() => alert(instructions), 500);
   };
   
   const updateLiveSite = async () => {
