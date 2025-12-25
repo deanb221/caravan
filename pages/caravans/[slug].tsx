@@ -304,16 +304,13 @@ export default function CaravanDetailPage({ caravan: serverCaravan, allCaravans:
 }
 
 export const getStaticPaths: GetStaticPaths = async () => {
-  // Try to fetch from API first
+  // Try to fetch from database/JSON first
   let caravans = initialCaravans;
   try {
-    const baseUrl = process.env.NEXT_PUBLIC_SITE_URL || 'http://localhost:3000';
-    const res = await fetch(`${baseUrl}/api/caravans`).catch(() => null);
-    if (res?.ok) {
-      const data = await res.json();
-      if (Array.isArray(data) && data.length > 0) {
-        caravans = data;
-      }
+    const { getCaravans } = await import('@/lib/data');
+    const data = await getCaravans();
+    if (Array.isArray(data) && data.length > 0) {
+      caravans = data;
     }
   } catch (error) {
     console.error('Error fetching caravans for paths:', error);
@@ -332,16 +329,13 @@ export const getStaticPaths: GetStaticPaths = async () => {
 export const getStaticProps: GetStaticProps = async ({ params }) => {
   const slug = params?.slug as string;
   
-  // Try to fetch from API first
+  // Try to fetch from database/JSON first
   let caravans = initialCaravans;
   try {
-    const baseUrl = process.env.NEXT_PUBLIC_SITE_URL || 'http://localhost:3000';
-    const res = await fetch(`${baseUrl}/api/caravans`).catch(() => null);
-    if (res?.ok) {
-      const data = await res.json();
-      if (Array.isArray(data) && data.length > 0) {
-        caravans = data;
-      }
+    const { getCaravans } = await import('@/lib/data');
+    const data = await getCaravans();
+    if (Array.isArray(data) && data.length > 0) {
+      caravans = data;
     }
   } catch (error) {
     console.error('Error fetching caravans:', error);

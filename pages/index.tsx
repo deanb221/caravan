@@ -300,16 +300,13 @@ export default function Home({ caravans: serverCaravans, sites: serverSites }: H
 }
 
 export const getStaticProps: GetStaticProps = async () => {
-  // Try to fetch from API (database), fallback to static data
+  // Try to fetch from database/JSON, fallback to static data
   try {
-    const baseUrl = process.env.NEXT_PUBLIC_SITE_URL || 'http://localhost:3000';
-    const [caravansRes, sitesRes] = await Promise.all([
-      fetch(`${baseUrl}/api/caravans`).catch(() => null),
-      fetch(`${baseUrl}/api/sites`).catch(() => null),
+    const { getCaravans, getCaravanSites } = await import('@/lib/data');
+    const [caravans, sites] = await Promise.all([
+      getCaravans(),
+      getCaravanSites(),
     ]);
-
-    const caravans = caravansRes?.ok ? await caravansRes.json() : initialCaravans;
-    const sites = sitesRes?.ok ? await sitesRes.json() : initialSites;
 
     return {
       props: {

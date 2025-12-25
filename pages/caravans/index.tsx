@@ -68,11 +68,10 @@ export default function CaravansPage({ caravans: serverCaravans }: CaravansPageP
 }
 
 export const getStaticProps: GetStaticProps = async () => {
-  // Try to fetch from API (database), fallback to static data
+  // Try to fetch from database/JSON, fallback to static data
   try {
-    const baseUrl = process.env.NEXT_PUBLIC_SITE_URL || 'http://localhost:3000';
-    const caravansRes = await fetch(`${baseUrl}/api/caravans`).catch(() => null);
-    const caravans = caravansRes?.ok ? await caravansRes.json() : initialCaravans;
+    const { getCaravans } = await import('@/lib/data');
+    const caravans = await getCaravans();
 
     return {
       props: {
