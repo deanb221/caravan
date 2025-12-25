@@ -1,6 +1,8 @@
 import { CaravanSite } from '@/types';
+import sitesData from './caravanSites.json';
 
-export const caravanSites: CaravanSite[] = [
+// Fallback data if JSON is empty
+const fallbackSites: CaravanSite[] = [
   {
     id: '1',
     name: 'Giant\'s Causeway Caravan Park',
@@ -135,18 +137,11 @@ export const caravanSites: CaravanSite[] = [
   },
 ];
 
+// Export the data from JSON file, with fallback to original data
+export const caravanSites: CaravanSite[] = Array.isArray(sitesData) && sitesData.length > 0 
+  ? sitesData 
+  : fallbackSites;
+
 export function getCaravanSiteById(id: string): CaravanSite | undefined {
   return caravanSites.find(site => site.id === id);
 }
-
-
-
-
-
-
-
-
-
-
-
-
