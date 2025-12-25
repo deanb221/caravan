@@ -94,3 +94,29 @@ export default function CaravanSitesPage({ sites: serverSites }: CaravanSitesPag
   );
 }
 
+export const getStaticProps: GetStaticProps = async () => {
+  // Try to fetch from database/JSON, fallback to static data
+  try {
+    const { getCaravanSites } = await import('@/lib/data');
+    const sites = await getCaravanSites();
+
+    // Only use fetched data if it exists, otherwise use initial (which has fallback)
+    const finalSites = Array.isArray(sites) && sites.length > 0 ? sites : initialSites;
+
+    return {
+      props: {
+        sites: finalSites,
+      },
+      revalidate: 60, // Revalidate every minute (faster updates)
+    };
+  } catch (error) {
+    console.error('Error fetching data:', error);
+    return {
+      props: {
+        sites: initialSites,
+      },
+      revalidate: 60,
+    };
+  }
+};
+
