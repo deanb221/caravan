@@ -7,7 +7,7 @@ export default function Document() {
     <Html lang="en">
       <Head>
         <meta name="description" content="NI Caravan Hire - Quality touring caravans for hire across Northern Ireland. Book your perfect caravan holiday today. Gas Safe certified and electrically inspected." />
-        <link rel="icon" href="/favicon.ico" />
+        <link rel="icon" href="/logo.png" />
         
         {/* Open Graph / Facebook */}
         <meta property="og:type" content="website" />
