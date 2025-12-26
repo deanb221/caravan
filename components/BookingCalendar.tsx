@@ -104,8 +104,8 @@ export default function BookingCalendar({ caravan, onDateChange, startDate, endD
     
     // Weekend booking (Friday to Monday = 3 nights: Fri, Sat, Sun)
     if (days === 3) {
-      // Friday night, Saturday night, Sunday night
-      return caravan.pricing.weekend * 3;
+      // Weekend price is already the total for 3 nights
+      return caravan.pricing.weekend;
     }
     
     // Weekly booking (Friday to Friday = 7 nights)
