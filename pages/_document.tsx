@@ -29,6 +29,26 @@ export default function Document() {
         
         {/* Google Search Console Verification */}
         <meta name="google-site-verification" content="NiTyCQ7aJ54uUM0ZQq86LtHKQ5iHQnUOd9NujM3W4eA" />
+        
+        {/* Google Analytics */}
+        {(process.env.NEXT_PUBLIC_GA_ID || 'G-T46KXFFJN4') && (
+          <>
+            <script
+              async
+              src={`https://www.googletagmanager.com/gtag/js?id=${process.env.NEXT_PUBLIC_GA_ID || 'G-T46KXFFJN4'}`}
+            />
+            <script
+              dangerouslySetInnerHTML={{
+                __html: `
+                  window.dataLayer = window.dataLayer || [];
+                  function gtag(){dataLayer.push(arguments);}
+                  gtag('js', new Date());
+                  gtag('config', '${process.env.NEXT_PUBLIC_GA_ID || 'G-T46KXFFJN4'}');
+                `,
+              }}
+            />
+          </>
+        )}
       </Head>
       <body>
         <Main />
