@@ -24,6 +24,27 @@ export default function BookingCalendar({ caravan, onDateChange, startDate, endD
     phone: '',
   });
 
+  // Minimum booking date: March 1st (always the next/current March 1st)
+  const getMinBookingDate = (): Date => {
+    const now = new Date();
+    const currentYear = now.getFullYear();
+    const marchFirstThisYear = new Date(currentYear, 2, 1); // Month 2 = March (0-indexed)
+    // Set time to start of day for accurate comparison
+    marchFirstThisYear.setHours(0, 0, 0, 0);
+    const nowStartOfDay = new Date(now);
+    nowStartOfDay.setHours(0, 0, 0, 0);
+    
+    // If we're past March 1st this year, use next year's March 1st
+    // Otherwise use this year's March 1st
+    if (nowStartOfDay > marchFirstThisYear) {
+      return new Date(currentYear + 1, 2, 1);
+    }
+    
+    return marchFirstThisYear;
+  };
+
+  const minBookingDate = getMinBookingDate();
+
   // Convert booked dates to Date objects
   const bookedDates = caravan.availability.bookedDates.map(date => parseISO(date));
 
@@ -50,9 +71,14 @@ export default function BookingCalendar({ caravan, onDateChange, startDate, endD
     return date.getDay() === 1; // Monday = 1
   };
 
-  // Filter check-in dates - only allow Fridays
+  // Filter check-in dates - only allow Fridays on or after March 1st
   const filterCheckInDate = (date: Date): boolean => {
-    return !isDateBooked(date) && isAfter(date, new Date()) && isFriday(date);
+    if (isDateBooked(date)) return false;
+    if (!isFriday(date)) return false;
+    // Allow dates on or after March 1st (inclusive)
+    const dateStr = format(date, 'yyyy-MM-dd');
+    const minDateStr = format(minBookingDate, 'yyyy-MM-dd');
+    return dateStr >= minDateStr;
   };
 
   // Filter check-out dates - only allow Mondays (for weekend) or Fridays (for weekly)
@@ -236,7 +262,7 @@ export default function BookingCalendar({ caravan, onDateChange, startDate, endD
               startDate={localStartDate}
               endDate={localEndDate}
               filterDate={filterCheckInDate}
-              minDate={new Date()}
+              minDate={minBookingDate}
               placeholderText="Select Friday (check-in)"
               className="w-full px-4 py-3.5 border-2 border-gray-200 rounded-xl focus:ring-2 focus:ring-primary-500 focus:border-primary-500 transition-all duration-200 bg-gray-50 focus:bg-white font-medium"
               dateFormat="dd/MM/yyyy"
@@ -254,7 +280,7 @@ export default function BookingCalendar({ caravan, onDateChange, startDate, endD
               selectsEnd
               startDate={localStartDate}
               endDate={localEndDate}
-              minDate={localStartDate || new Date()}
+              minDate={localStartDate || minBookingDate}
               filterDate={filterCheckOutDate}
               placeholderText="Select Monday or Friday (check-out)"
               className="w-full px-4 py-3.5 border-2 border-gray-200 rounded-xl focus:ring-2 focus:ring-primary-500 focus:border-primary-500 transition-all duration-200 bg-gray-50 focus:bg-white font-medium"
