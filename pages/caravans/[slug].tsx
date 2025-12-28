@@ -288,6 +288,13 @@ export default function CaravanDetailPage({ caravan: serverCaravan, allCaravans:
                     </tr>
                   </tbody>
                 </table>
+                <div className="mt-4 pt-4 border-t border-gray-200">
+                  <div className="bg-gradient-to-r from-green-50 to-emerald-50 border border-green-200 rounded-lg p-3">
+                    <p className="text-sm text-green-800 font-semibold text-center">
+                      🌷 20% discount for Spring time bookings (March, April & May)
+                    </p>
+                  </div>
+                </div>
               </div>
             </div>
           </div>
