@@ -74,6 +74,7 @@ export default function CaravanCard({ caravan }: CaravanCardProps) {
               <p className="text-xs text-gray-500 uppercase tracking-wide mb-1">From</p>
               <p className="text-3xl font-bold gradient-text">£{caravan.pricing.weekend}</p>
               <p className="text-xs text-gray-500 mt-1">weekend</p>
+              <p className="text-xs text-green-600 font-semibold mt-1.5">20% discount for Spring time bookings</p>
             </div>
             <span className="btn-primary text-sm font-semibold">
               View Details →
