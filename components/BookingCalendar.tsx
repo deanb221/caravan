@@ -485,7 +485,7 @@ export default function BookingCalendar({ caravan, onDateChange, startDate, endD
             <div>
               <p className="font-semibold text-amber-900 mb-1 text-sm">Booking & Damage Deposit</p>
               <p className="text-xs text-amber-800 leading-relaxed">
-                A £250 deposit is required per booking. This acts as a booking deposit initially, then as a damage deposit 
+                A £200 deposit is required per booking. This acts as a booking deposit initially, then as a damage deposit 
                 during your hire. The full amount is refundable provided the caravan is returned clean, undamaged, and on time.
               </p>
               <a href="/terms" className="text-amber-700 hover:text-amber-900 font-semibold text-xs mt-2 inline-block underline">

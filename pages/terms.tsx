@@ -19,7 +19,7 @@ export default function TermsPage() {
               <h2 className="text-3xl font-extrabold text-gray-900 mb-6 tracking-tight">Booking & Damage Deposit</h2>
               <div className="space-y-4 text-gray-700 font-medium leading-relaxed">
                 <p>
-                  All touring caravan hires are subject to a booking and damage deposit of £250. This deposit is payable 
+                  All touring caravan hires are subject to a booking and damage deposit of £200. This deposit is payable 
                   once per caravan hire (not per booking period) and serves as a booking deposit when you make your reservation.
                 </p>
                 <p>
@@ -29,7 +29,7 @@ export default function TermsPage() {
                 </p>
                 <p>
                   In the event that the touring caravan sustains damage during your hire period, the repair cost will be deducted 
-                  from this deposit, up to a maximum cost to the hirer of the insurance excess of £250. For accidental damage, 
+                  from this deposit, up to a maximum cost to the hirer of the insurance excess of £200. For accidental damage, 
                   any costs exceeding this insurance excess will be covered by NI Caravan Hire or our insurance company.
                 </p>
                 <div className="bg-primary-50 border-l-4 border-primary-600 p-4 mt-6 rounded-r-lg">
@@ -189,7 +189,7 @@ export default function TermsPage() {
                 <div>
                   <h3 className="text-xl font-bold text-gray-900 mb-3 tracking-tight">Insurance & Liability</h3>
                   <p>
-                    All our touring caravans are fully insured. The hirer is responsible for the first £250 of any damage 
+                    All our touring caravans are fully insured. The hirer is responsible for the first £200 of any damage 
                     (the insurance excess), as covered by the damage deposit. Any damage exceeding this amount is covered 
                     by our insurance policy.
                   </p>

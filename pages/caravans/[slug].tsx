@@ -252,7 +252,7 @@ export default function CaravanDetailPage({ caravan: serverCaravan, allCaravans:
               <h2 className="text-2xl font-extrabold text-gray-900 mb-4 tracking-tight">Booking & Damage Deposit</h2>
               <div className="space-y-3 text-gray-700 font-medium leading-relaxed">
                 <p>
-                  A £250 deposit is required per booking. This acts as a booking deposit initially, then as a damage deposit 
+                  A £200 deposit is required per booking. This acts as a booking deposit initially, then as a damage deposit 
                   during your hire. The full amount is refundable provided the caravan is returned clean, undamaged, and on time.
                 </p>
                 <div className="mt-4">
